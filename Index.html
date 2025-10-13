@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="GetItDone">
+    <title>GetItDone - Workout Tracker</title>
+
+```
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+<!-- React and ReactDOM -->
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+
+<!-- Babel for JSX -->
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+    
+    /* iOS safe area support */
+    @supports (padding: max(0px)) {
+        body {
+            padding-left: max(0px, env(safe-area-inset-left));
+            padding-right: max(0px, env(safe-area-inset-right));
+        }
+    }
+</style>
+```
+
+</head>
+<body>
+    <div id="root"></div>
+
+```
+<script type="text/babel">
+    const { useState, useEffect } = React;
+
+    // Lucide React icons as inline SVG components
+    const Dumbbell = ({ size = 24, className = "" }) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+            <path d="m6.5 6.5 11 11"/>
+            <path d="m21 21-1-1"/>
+            <path d="m3 3 1 1"/>
+            <path d="m18 22 4-4"/>
+            <path d="m2 6 4-4"/>
+            <path d="m3 10 7-7"/>
+            <path d="m14 21 7-7"/>
+        </svg>
+    );
+
+    const Calendar = ({ size = 24, className = "" }) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+            <line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8" y1="2" x2="8" y2="6"/>
+            <line x1="3" y1="10" x2="21" y2="10"/>
+        </svg>
+    );
+
+    const Plus = ({ size = 24, className = "" }) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+            <line x1="12" y1="5" x2="12" y2="19"/>
+            <line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+    );
+
+    const User = ({ size = 24, className = "" }) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+        </svg>
+    );
+
+    const Flame = ({ size = 24, className = "" }) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+            <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>
+        </svg>
+    );
+
+    const CheckCircle = ({ size = 24, className = "" }) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+            <polyline points="22 4 12 14.01 9 11.01"/>
+        </svg>
+    );
+
+    const DB_NAME = 'GetItDoneDB';
+    const DB_VERSION = 1;
+
+    const initDB = () => {
+        return new Promise((resolve, reject) => {
+            const request = indexedDB.open(DB_NAME, DB_VERSION);
+            
+            request.onerror = () => reject(request.error);
+            request.onsuccess = () => resolve(request.result);
+            
+            request.onupgradeneeded = (e) => {
+                const db = e.target.result;
+                
+                if (!db.objectStoreNames.contains('workouts')) {
+                    db.createObjectStore('workouts', { keyPath: 'id', autoIncrement: true });
+                }
+                if (!db.objectStoreNames.contains('profile')) {
+                    db.createObjectStore('profile', { keyPath: 'id' });
+                }
+                if (!db.objectStoreNames.contains('weeklyPlans')) {
+                    db.createObjectStore('weeklyPlans', { keyPath: 'id', autoIncrement: true });
+                }
+            };
+        });
+    };
+
+    const GetItDone = () => {
+        const [currentView, setCurrentView] = useState('dashboard');
+        const [profile, setProfile] = useState(null);
+        const [workouts, setWorkouts] = useState([]);
+        const [currentStreak, setCurrentStreak] = useState(0);
+        const [weeklyPlan, setWeeklyPlan] = useState(null);
+        const [db, setDb] = useState(null);
+
+        useEffect(() => {
+            initDB().then(database => {
+                setDb(database);
+                loadProfile(database);
+                loadWorkouts(database);
+                loadWeeklyPlan(database);
+            });
+        }, []);
+
+        const loadProfile = async (database) => {
+            const tx = database.transaction('profile', 'readonly');
+            const store = tx.objectStore('profile');
+            const request = store.get('main');
+            
+            request.onsuccess = () => {
+                if (request.result) {
+                    setProfile(request.result);
+                }
+            };
+        };
+
+        const loadWorkouts = async (database) => {
+            const tx = database.transaction('workouts', 'readonly');
+            const store = tx.objectStore('workouts');
+            const request = store.getAll();
+            
+            request.onsuccess = () => {
+                const allWorkouts = request.result;
+                setWorkouts(allWorkouts);
+                calculateStreak(allWorkouts);
+            };
+        };
+
+        const loadWeeklyPlan = async (database) => {
+            const tx = database.transaction('weeklyPlans', 'readonly');
+            const store = tx.objectStore('weeklyPlans');
+            const request = store.getAll();
+            
+            request.onsuccess = () => {
+                const plans = request.result;
+                if (plans.length > 0) {
+                    const latestPlan = plans[plans.length - 1];
+                    setWeeklyPlan(latestPlan);
+                }
+            };
+        };
+
+        const calculateStreak = (allWorkouts) => {
+            if (allWorkouts.length === 0) {
+                setCurrentStreak(0);
+                return;
+            }
+
+            const sortedWorkouts = allWorkouts.sort((a, b) => new Date(b.date) - new Date(a.date));
+            let streak = 0;
+            let currentDate = new Date();
+            currentDate.setHours(0, 0, 0, 0);
+
+            for (let workout of sortedWorkouts) {
+                const workoutDate = new Date(workout.date);
+                workoutDate.setHours(0, 0, 0, 0);
+                
+                const diffDays = Math.floor((currentDate - workoutDate) / (1000 * 60 * 60 * 24));
+                
+                if (diffDays === streak) {
+                    streak++;
+                } else if (diffDays > streak) {
+                    break;
+                }
+            }
+            
+            setCurrentStreak(streak);
+        };
+
+        const saveProfile = async (profileData) => {
+            if (!db) return;
+            
+            const tx = db.transaction('profile', 'readwrite');
+            const store = tx.objectStore('profile');
+            store.put({ id: 'main', ...profileData });
+            
+            tx.oncomplete = () => {
+                setProfile({ id: 'main', ...profileData });
+                setCurrentView('dashboard');
+            };
+        };
+
+        const getTodayWorkout = () => {
+            if (!weeklyPlan) return null;
+            
+            const today = new Date().toLocaleDateString('en-US', { weekday: 'long' });
+            return weeklyPlan.workouts?.find(w => w.day === today);
+        };
+
+        const hasCompletedToday = () => {
+            const today = new Date().toDateString();
+            return workouts.some(w => new Date(w.date).toDateString() === today);
+        };
+
+        const Dashboard = () => {
+            const todayWorkout = getTodayWorkout();
+            const completedToday = hasCompletedToday();
+            
+            return (
+                <div className="p-6 space-y-6">
+                    <div className="text-center">
+                        <h1 className="text-4xl font-bold text-white mb-2">GetItDone</h1>
+                        <p className="text-gray-400">
+                            {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
+                        </p>
+                    </div>
+
+                    <div className="bg-gradient-to-br from-orange-500 to-red-600 rounded-2xl p-6 shadow-xl">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-white/80 text-sm font-medium">Current Streak</p>
+                                <p className="text-5xl font-bold text-white mt-1">{currentStreak}</p>
+                                <p className="text-white/80 text-sm mt-1">days</p>
+                            </div>
+                            <Flame size={64} className="text-white/30" />
+                        </div>
+                    </div>
+
+                    <div className="bg-gray-800 rounded-2xl p-6 shadow-xl">
+                        <h2 className="text-xl font-bold text-white mb-4">Today's Workout</h2>
+                        {todayWorkout ? (
+                            <div className="space-y-3">
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        <p className="text-2xl font-bold text-white">{todayWorkout.type}</p>
+                                        <p className="text-gray-400 text-sm">{todayWorkout.duration} • {todayWorkout.focus}</p>
+                                    </div>
+                                    {completedToday && (
+                                        <CheckCircle size={32} className="text-green-500" />
+                                    )}
+                                </div>
+                                {!completedToday && (
+                                    <button
+                                        onClick={() => setCurrentView('logger')}
+                                        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition"
+                                    >
+                                        Start Workout
+                                    </button>
+                                )}
+                            </div>
+                        ) : (
+                            <div className="text-center py-8">
+                                <p className="text-gray-400">No workout scheduled for today</p>
+                                <button
+                                    onClick={() => setCurrentView('planner')}
+                                    className="mt-4 text-blue-400 hover:text-blue-300 font-medium"
+                                >
+                                    Plan Your Week →
+                                </button>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="bg-gray-800 rounded-xl p-4">
+                            <p className="text-gray-400 text-sm">This Week</p>
+                            <p className="text-3xl font-bold text-white mt-1">
+                                {workouts.filter(w => {
+                                    const weekAgo = new Date();
+                                    weekAgo.setDate(weekAgo.getDate() - 7);
+                                    return new Date(w.date) > weekAgo;
+                                }).length}
+                            </p>
+                            <p className="text-gray-400 text-xs mt-1">workouts</p>
+                        </div>
+                        <div className="bg-gray-800 rounded-xl p-4">
+                            <p className="text-gray-400 text-sm">Total</p>
+                            <p className="text-3xl font-bold text-white mt-1">{workouts.length}</p>
+                            <p className="text-gray-400 text-xs mt-1">workouts</p>
+                        </div>
+                    </div>
+
+                    {!profile && (
+                        <div className="bg-blue-900/30 border border-blue-500/50 rounded-xl p-4">
+                            <p className="text-blue-200 font-medium mb-2">Welcome! Let's set up your profile</p>
+                            <button
+                                onClick={() => setCurrentView('profile')}
+                                className="text-blue-400 hover:text-blue-300 font-medium text-sm"
+                            >
+                                Complete Setup →
+                            </button>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        const ProfileSetup = () => {
+            const [formData, setFormData] = useState({
+                goals: profile?.goals || '',
+                weight: profile?.weight || '',
+                injuries: profile?.injuries || '',
+                preferredWorkoutTime: profile?.preferredWorkoutTime || 'morning'
+            });
+
+            return (
+                <div className="p-6">
+                    <h2 className="text-2xl font-bold text-white mb-6">Your Profile</h2>
+                    <div className="space-y-4">
+                        <div>
+                            <label className="block text-sm font-medium text-gray-300 mb-2">
+                                Primary Goals
+                            </label>
+                            <textarea
+                                value={formData.goals}
+                                onChange={(e) => setFormData({...formData, goals: e.target.value})}
+                                className="w-full bg-gray-800 text-white rounded-xl p-3 border border-gray-700 focus:border-blue-500 focus:outline-none"
+                                rows="3"
+                                placeholder="Build muscle, improve mobility, surfing performance..."
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-gray-300 mb-2">
+                                Current Weight (lbs)
+                            </label>
+                            <input
+                                type="number"
+                                value={formData.weight}
+                                onChange={(e) => setFormData({...formData, weight: e.target.value})}
+                                className="w-full bg-gray-800 text-white rounded-xl p-3 border border-gray-700 focus:border-blue-500 focus:outline-none"
+                                placeholder="185"
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-gray-300 mb-2">
+                                Current Injuries or Limitations
+                            </label>
+                            <textarea
+                                value={formData.injuries}
+                                onChange={(e) => setFormData({...formData, injuries: e.target.value})}
+                                className="w-full bg-gray-800 text-white rounded-xl p-3 border border-gray-700 focus:border-blue-500 focus:outline-none"
+                                rows="2"
+                                placeholder="None, or describe any injuries..."
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-gray-300 mb-2">
+                                Preferred Workout Time
+                            </label>
+                            <select
+                                value={formData.preferredWorkoutTime}
+                                onChange={(e) => setFormData({...formData, preferredWorkoutTime: e.target.value})}
+                                className="w-full bg-gray-800 text-white rounded-xl p-3 border border-gray-700 focus:border-blue-500 focus:outline-none"
+                            >
+                                <option value="morning">Morning</option>
+                                <option value="afternoon">Afternoon</option>
+                                <option value="evening">Evening</option>
+                            </select>
+                        </div>
+
+                        <button
+                            onClick={() => saveProfile(formData)}
+                            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition mt-6"
+                        >
+                            Save Profile
+                        </button>
+                    </div>
+                </div>
+            );
+        };
+
+        const WeeklyPlanner = () => {
+            return (
+                <div className="p-6">
+                    <h2 className="text-2xl font-bold text-white mb-6">Weekly Planner</h2>
+                    <div className="bg-gray-800 rounded-xl p-6 text-center">
+                        <p className="text-gray-400 mb-4">AI-powered weekly planning coming soon!</p>
+                        <p className="text-sm text-gray-500">This will generate custom workouts based on your schedule and goals.</p>
+                    </div>
+                </div>
+            );
+        };
+
+        const WorkoutLogger = () => {
+            return (
+                <div className="p-6">
+                    <h2 className="text-2xl font-bold text-white mb-6">Log Workout</h2>
+                    <div className="bg-gray-800 rounded-xl p-6 text-center">
+                        <p className="text-gray-400 mb-4">Workout logging interface coming soon!</p>
+                        <p className="text-sm text-gray-500">You'll be able to log exercises, sets, reps, and how you feel.</p>
+                    </div>
+                </div>
+            );
+        };
+
+        const BottomNav = () => {
+            const navItems = [
+                { id: 'dashboard', icon: Dumbbell, label: 'Home' },
+                { id: 'planner', icon: Calendar, label: 'Plan' },
+                { id: 'logger', icon: Plus, label: 'Log' },
+                { id: 'profile', icon: User, label: 'Profile' }
+            ];
+
+            return (
+                <div className="fixed bottom-0 left-0 right-0 bg-gray-900 border-t border-gray-800">
+                    <div className="flex justify-around items-center h-20 max-w-md mx-auto">
+                        {navItems.map(item => {
+                            const Icon = item.icon;
+                            const isActive = currentView === item.id;
+                            return (
+                                <button
+                                    key={item.id}
+                                    onClick={() => setCurrentView(item.id)}
+                                    className="flex flex-col items-center justify-center flex-1 h-full"
+                                >
+                                    <Icon 
+                                        size={24} 
+                                        className={isActive ? 'text-blue-500' : 'text-gray-500'}
+                                    />
+                                    <span className={`text-xs mt-1 ${isActive ? 'text-blue-500' : 'text-gray-500'}`}>
+                                        {item.label}
+                                    </span>
+                                </button>
+                            );
+                        })}
+                    </div>
+                </div>
+            );
+        };
+
+        return (
+            <div className="min-h-screen bg-gray-900 pb-20">
+                {currentView === 'dashboard' && <Dashboard />}
+                {currentView === 'profile' && <ProfileSetup />}
+                {currentView === 'planner' && <WeeklyPlanner />}
+                {currentView === 'logger' && <WorkoutLogger />}
+                
+                <BottomNav />
+            </div>
+        );
+    };
+
+    ReactDOM.render(<GetItDone />, document.getElementById('root'));
+</script>
+```
+
+</body>
+</html>
