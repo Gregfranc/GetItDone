@@ -94,6 +94,12 @@
             </svg>
         );
 
+        const ChevronDown = ({ size = 24, className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <polyline points="6 9 12 15 18 9"/>
+            </svg>
+        );
+
         const DB_NAME = 'GetItDoneDB';
         const DB_VERSION = 1;
 
@@ -120,60 +126,255 @@
             });
         };
 
-        const WORKOUT_TEMPLATES = {
-            gym: [
-                { name: 'Upper Body Strength', focus: 'Chest, Back, Shoulders', exercises: ['Bench Press', 'Pull-ups', 'Overhead Press', 'Rows'] },
-                { name: 'Lower Body Power', focus: 'Legs, Glutes', exercises: ['Squats', 'Deadlifts', 'Lunges', 'Leg Press'] },
-                { name: 'Full Body', focus: 'Compound movements', exercises: ['Squats', 'Bench Press', 'Deadlifts', 'Pull-ups'] },
-                { name: 'Surf Conditioning', focus: 'Paddling, Pop-ups, Balance', exercises: ['Cable Rows', 'Push-ups', 'Single-leg RDL', 'Core rotations'] }
-            ],
-            cardio: [
-                { name: 'Steady Run', focus: 'Endurance', duration: '30-45 min', intensity: 'Moderate pace' },
-                { name: 'Interval Run', focus: 'Speed & Power', duration: '25-35 min', intensity: 'High intensity intervals' },
-                { name: 'Easy Recovery Run', focus: 'Active Recovery', duration: '20-30 min', intensity: 'Easy conversational pace' }
-            ],
-            bike: [
-                { name: 'Mountain Bike Ride', focus: 'Endurance & Legs', duration: '45-90 min', intensity: 'Moderate with climbs' },
-                { name: 'Interval Bike', focus: 'Power & Cardio', duration: '30-40 min', intensity: 'High intensity sprints' }
-            ],
-            swim: [
-                { name: 'Endurance Swim', focus: 'Cardio & Shoulders', duration: '30-45 min', intensity: 'Steady laps' },
-                { name: 'Surf Training Swim', focus: 'Paddling Power', duration: '30 min', intensity: 'Sprint intervals' }
-            ],
-            home: [
-                { name: 'Bodyweight Circuit', focus: 'Full Body', exercises: ['Push-ups', 'Jump Squats', 'Burpees', 'Plank'] },
-                { name: 'Core & Mobility', focus: 'Abs, Flexibility', exercises: ['Ab Wheel', 'Band work', 'Stretching', 'Yoga flow'] },
-                { name: 'Jump Rope HIIT', focus: 'Cardio & Coordination', duration: '20 min', exercises: ['Jump rope intervals', 'Bodyweight movements'] }
-            ]
-        };
+        const GYM_CIRCUITS = [
+            {
+                name: "Upper Body Power & Paddle Strength",
+                warmup: "5 min: Arm circles, band pull-aparts, thoracic rotations, shoulder dislocations",
+                exercises: [
+                    { name: "Dumbbell Bench Press", reps: "10-12", notes: "Explosive up, controlled down" },
+                    { name: "Cable Rows", reps: "12", notes: "Simulate paddle motion, squeeze shoulder blades" },
+                    { name: "Arnold Press", reps: "10", notes: "Full rotation for shoulder mobility" }
+                ],
+                rounds: "4-5",
+                rest: "90 seconds",
+                surfAddon: "Pop-up Burpees x10 (explosive chest-to-ground, jump to feet)"
+            },
+            {
+                name: "Explosive Upper + Rotational Core",
+                warmup: "5 min: Dynamic stretches, band rotations, cat-cow stretches",
+                exercises: [
+                    { name: "Explosive Push-ups", reps: "12", notes: "Clap or hands off ground" },
+                    { name: "Landmine Rotations", reps: "10 each side", notes: "Full hip rotation for surf turns" },
+                    { name: "Pull-ups or Lat Pulldowns", reps: "8-10", notes: "Wide grip for paddle strength" }
+                ],
+                rounds: "4-5",
+                rest: "90 seconds",
+                surfAddon: "TRX/Band Face Pulls x15 (paddle endurance)"
+            },
+            {
+                name: "Lower Body Power & Pop-up Explosion",
+                warmup: "5 min: Leg swings, hip circles, ankle mobility, band walks",
+                exercises: [
+                    { name: "Barbell or Goblet Squats", reps: "10-12", notes: "Explosive up for pop-up power" },
+                    { name: "Single-Leg RDL", reps: "10 each leg", notes: "Balance and hamstring strength" },
+                    { name: "Jump Lunges", reps: "8 each leg", notes: "Explosive switching for agility" }
+                ],
+                rounds: "4-5",
+                rest: "90 seconds",
+                surfAddon: "Box Jumps x10 (explosive pop-up simulation)"
+            },
+            {
+                name: "Full Body Functional & Core Stability",
+                warmup: "5 min: Inchworms, world's greatest stretch, plank to down dog",
+                exercises: [
+                    { name: "Deadlifts", reps: "8-10", notes: "Build posterior chain for stability" },
+                    { name: "Dumbbell Thrusters", reps: "12", notes: "Full body power" },
+                    { name: "Pallof Press", reps: "12 each side", notes: "Anti-rotation core for wave stability" }
+                ],
+                rounds: "4-5",
+                rest: "90 seconds",
+                surfAddon: "Bosu Ball or Balance Board holds x60 sec (surf balance)"
+            },
+            {
+                name: "Shoulder Health & Paddle Endurance",
+                warmup: "5 min: Band internal/external rotations, shoulder CARs, scapular slides",
+                exercises: [
+                    { name: "Face Pulls", reps: "15", notes: "Rear delt and rotator cuff health" },
+                    { name: "Dumbbell Rows", reps: "12 each arm", notes: "Paddle power unilateral" },
+                    { name: "Overhead Carries", reps: "30 sec each arm", notes: "Shoulder stability overhead" }
+                ],
+                rounds: "4",
+                rest: "75 seconds",
+                surfAddon: "Band Paddle Simulation x20 each arm (endurance)"
+            },
+            {
+                name: "Core Power & Rotational Strength",
+                warmup: "5 min: Bird dogs, dead bugs, spinal rotations",
+                exercises: [
+                    { name: "Ab Wheel Rollouts", reps: "10-12", notes: "Full extension for core strength" },
+                    { name: "Russian Twists", reps: "20 total", notes: "Weighted for rotational power" },
+                    { name: "Hanging Leg Raises", reps: "10-12", notes: "Straight legs for max engagement" }
+                ],
+                rounds: "4-5",
+                rest: "60 seconds",
+                surfAddon: "Medicine Ball Slams x15 (explosive core)"
+            }
+        ];
+
+        const CARDIO_WORKOUTS = [
+            {
+                name: "Steady Endurance Run",
+                description: "Build aerobic base and mental toughness",
+                duration: "35-45 min",
+                structure: "Conversational pace, nose breathing if possible",
+                warmup: "5 min walk + dynamic leg swings",
+                cooldown: "5 min walk + static stretches",
+                surfAddon: "Finish with 10 pop-up burpees for surf conditioning"
+            },
+            {
+                name: "Interval Power Run",
+                description: "Explosive speed and paddle burst power",
+                duration: "30 min total",
+                structure: "5 min warm-up jog, then 8 rounds: 2 min hard / 1 min easy, 5 min cool down",
+                warmup: "Dynamic warm-up + high knees",
+                cooldown: "Walk + hip flexor stretches",
+                surfAddon: "Sprint starts x5 (simulate catching wave)"
+            },
+            {
+                name: "Hill Sprints for Leg Power",
+                description: "Build explosive lower body for pop-ups",
+                duration: "25 min total",
+                structure: "Find a hill, sprint up 20-30 sec, walk down recovery, repeat 8-10 times",
+                warmup: "10 min easy jog + leg swings",
+                cooldown: "Stretching focus on calves and quads",
+                surfAddon: "Downhill bounds x5 (controlled explosive)"
+            }
+        ];
+
+        const BIKE_WORKOUTS = [
+            {
+                name: "Mountain Bike Endurance",
+                description: "Leg endurance and mental toughness",
+                duration: "60-90 min",
+                structure: "Moderate pace with natural terrain variation",
+                warmup: "10 min easy spin",
+                cooldown: "10 min easy spin + quad stretches",
+                surfAddon: "Finish with 20 jump squats (leg power)"
+            },
+            {
+                name: "Bike Interval Power",
+                description: "Explosive leg power for pop-ups",
+                duration: "40 min total",
+                structure: "10 min warm-up, then 6 rounds: 3 min hard / 2 min easy, 10 min cool down",
+                warmup: "Easy spin + leg swings",
+                cooldown: "Easy spin + stretching",
+                surfAddon: "Box jumps x10 (explosive power transfer)"
+            }
+        ];
+
+        const SWIM_WORKOUTS = [
+            {
+                name: "Endurance Swim",
+                description: "Shoulder endurance and breathing",
+                duration: "35-45 min",
+                structure: "Continuous swimming, mix freestyle and backstroke for shoulder balance",
+                warmup: "5 min easy swim + arm circles",
+                cooldown: "5 min easy + shoulder stretches",
+                surfAddon: "Sprint swim 25m x4 (paddle burst simulation)"
+            },
+            {
+                name: "Surf Training Swim",
+                description: "Paddle power and breath control",
+                duration: "30 min",
+                structure: "10 rounds: 50m sprint / 30 sec rest (simulate paddling out)",
+                warmup: "200m easy mixed strokes",
+                cooldown: "Easy 200m + static stretches",
+                surfAddon: "Underwater swimming x3 lengths (breath work)"
+            }
+        ];
+
+        const HOME_CIRCUITS = [
+            {
+                name: "Bodyweight Power Circuit",
+                warmup: "5 min: Jumping jacks, arm circles, hip openers",
+                exercises: [
+                    { name: "Jump Squats", reps: "12", notes: "Explosive for pop-up power" },
+                    { name: "Decline Push-ups", reps: "12", notes: "Feet elevated for paddle strength" },
+                    { name: "Reverse Lunges", reps: "10 each leg", notes: "Balance and leg strength" }
+                ],
+                rounds: "4-5",
+                rest: "75 seconds",
+                surfAddon: "Pop-up practice x20 (dry land surf conditioning)"
+            },
+            {
+                name: "Band & Core Strength",
+                warmup: "5 min: Dynamic stretches with bands",
+                exercises: [
+                    { name: "Band Pull-aparts", reps: "15", notes: "Shoulder health and posture" },
+                    { name: "Ab Wheel Rollouts", reps: "10-12", notes: "Core strength and control" },
+                    { name: "Band Rows", reps: "15", notes: "Paddle simulation" }
+                ],
+                rounds: "4-5",
+                rest: "60 seconds",
+                surfAddon: "Band rotational chops x12 each side (surf turns)"
+            },
+            {
+                name: "Jump Rope HIIT & Agility",
+                warmup: "3 min: Light jump rope + ankle bounces",
+                exercises: [
+                    { name: "Jump Rope", reps: "60 seconds", notes: "Fast pace cardio" },
+                    { name: "Burpees", reps: "10", notes: "Full body explosive" },
+                    { name: "Mountain Climbers", reps: "30 seconds", notes: "Core and cardio" }
+                ],
+                rounds: "4-5",
+                rest: "90 seconds",
+                surfAddon: "Lateral bounds x20 total (agility)"
+            }
+        ];
 
         const generateWorkoutPlan = (availableDays, profile) => {
-            const workoutTypes = ['gym', 'cardio', 'bike', 'swim', 'home'];
             const selectedDays = availableDays.filter(d => d.selected);
             
             if (selectedDays.length === 0) return [];
 
             const plan = [];
+            const workoutTypes = ['gym', 'cardio', 'bike', 'swim', 'home'];
+            let gymCount = 0;
             let typeIndex = 0;
 
             selectedDays.slice(0, 5).forEach((day, index) => {
-                const type = workoutTypes[typeIndex % workoutTypes.length];
-                const templates = WORKOUT_TEMPLATES[type];
-                const template = templates[Math.floor(Math.random() * templates.length)];
-                
-                let workout = {
-                    day: day.day,
-                    type: type.charAt(0).toUpperCase() + type.slice(1),
-                    name: template.name,
-                    focus: template.focus,
-                    duration: template.duration || '45-60 min',
-                    exercises: template.exercises || [],
-                    intensity: template.intensity || 'Moderate to High',
-                    completed: false
-                };
+                let type = workoutTypes[typeIndex % workoutTypes.length];
+                let workout = {};
 
-                if (profile?.injuries && profile.injuries.toLowerCase() !== 'none') {
-                    workout.note = `Modified for: ${profile.injuries}`;
+                if (type === 'gym') {
+                    const circuit1 = GYM_CIRCUITS[gymCount % GYM_CIRCUITS.length];
+                    const circuit2 = GYM_CIRCUITS[(gymCount + 1) % GYM_CIRCUITS.length];
+                    
+                    workout = {
+                        day: day.day,
+                        type: 'Gym',
+                        options: [circuit1, circuit2],
+                        hasOptions: true
+                    };
+                    gymCount += 2;
+                } else if (type === 'cardio') {
+                    const cardioWorkout = CARDIO_WORKOUTS[Math.floor(Math.random() * CARDIO_WORKOUTS.length)];
+                    workout = {
+                        day: day.day,
+                        type: 'Cardio',
+                        ...cardioWorkout,
+                        hasOptions: false
+                    };
+                } else if (type === 'bike') {
+                    const bikeWorkout = BIKE_WORKOUTS[Math.floor(Math.random() * BIKE_WORKOUTS.length)];
+                    workout = {
+                        day: day.day,
+                        type: 'Bike',
+                        ...bikeWorkout,
+                        hasOptions: false
+                    };
+                } else if (type === 'swim') {
+                    const swimWorkout = SWIM_WORKOUTS[Math.floor(Math.random() * SWIM_WORKOUTS.length)];
+                    workout = {
+                        day: day.day,
+                        type: 'Swim',
+                        ...swimWorkout,
+                        hasOptions: false
+                    };
+                } else if (type === 'home') {
+                    const homeCircuit1 = HOME_CIRCUITS[Math.floor(Math.random() * HOME_CIRCUITS.length)];
+                    const homeCircuit2 = HOME_CIRCUITS[(HOME_CIRCUITS.indexOf(homeCircuit1) + 1) % HOME_CIRCUITS.length];
+                    
+                    workout = {
+                        day: day.day,
+                        type: 'Home',
+                        options: [homeCircuit1, homeCircuit2],
+                        hasOptions: true
+                    };
+                }
+
+                if (profile?.injuries && profile.injuries.toLowerCase() !== 'none' && profile.injuries.trim() !== '') {
+                    workout.injuryNote = `⚠️ Modified for: ${profile.injuries}`;
                 }
 
                 plan.push(workout);
@@ -190,6 +391,7 @@
             const [currentStreak, setCurrentStreak] = useState(0);
             const [weeklyPlan, setWeeklyPlan] = useState(null);
             const [db, setDb] = useState(null);
+            const [expandedWorkout, setExpandedWorkout] = useState(null);
 
             useEffect(() => {
                 initDB().then(database => {
@@ -309,6 +511,118 @@
                 return workouts.some(w => new Date(w.date).toDateString() === today);
             };
 
+            const WorkoutCard = ({ workout, isExpanded, onToggle }) => {
+                if (workout.hasOptions) {
+                    return (
+                        <div className="bg-gray-800 rounded-xl overflow-hidden">
+                            <button
+                                onClick={onToggle}
+                                className="w-full p-4 text-left flex items-center justify-between"
+                            >
+                                <div className="flex-1">
+                                    <p className="text-white font-bold text-lg">{workout.day}</p>
+                                    <p className="text-blue-400 font-semibold">{workout.type} Day - 2 Circuit Options</p>
+                                    <p className="text-gray-400 text-xs mt-1">Tap to view circuits</p>
+                                </div>
+                                <ChevronDown 
+                                    size={24} 
+                                    className={`text-gray-400 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+                                />
+                            </button>
+                            
+                            {isExpanded && (
+                                <div className="px-4 pb-4 space-y-4">
+                                    {workout.injuryNote && (
+                                        <p className="text-yellow-400 text-xs bg-yellow-900/20 p-2 rounded">
+                                            {workout.injuryNote}
+                                        </p>
+                                    )}
+                                    
+                                    {workout.options.map((option, idx) => (
+                                        <div key={idx} className="bg-gray-700 rounded-lg p-4">
+                                            <p className="text-white font-bold mb-2">Option {idx + 1}: {option.name}</p>
+                                            
+                                            <div className="mb-3">
+                                                <p className="text-blue-300 text-xs font-semibold mb-1">WARM-UP:</p>
+                                                <p className="text-gray-300 text-xs">{option.warmup}</p>
+                                            </div>
+                                            
+                                            <div className="mb-3">
+                                                <p className="text-green-300 text-xs font-semibold mb-2">CIRCUIT ({option.rounds} rounds):</p>
+                                                {option.exercises.map((ex, i) => (
+                                                    <div key={i} className="mb-2 pl-3 border-l-2 border-green-500">
+                                                        <p className="text-white text-sm font-semibold">{i + 1}. {ex.name}</p>
+                                                        <p className="text-gray-400 text-xs">{ex.reps} reps</p>
+                                                        <p className="text-gray-500 text-xs italic">{ex.notes}</p>
+                                                    </div>
+                                                ))}
+                                                <p className="text-orange-300 text-xs mt-2">💪 Rest: {option.rest} between rounds</p>
+                                            </div>
+                                            
+                                            <div className="bg-purple-900/30 rounded p-2 mt-2">
+                                                <p className="text-purple-300 text-xs font-semibold mb-1">🏄 SURF ADD-ON (Optional):</p>
+                                                <p className="text-gray-300 text-xs">{option.surfAddon}</p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    );
+                } else {
+                    return (
+                        <div className="bg-gray-800 rounded-xl overflow-hidden">
+                            <button
+                                onClick={onToggle}
+                                className="w-full p-4 text-left flex items-center justify-between"
+                            >
+                                <div className="flex-1">
+                                    <p className="text-white font-bold text-lg">{workout.day}</p>
+                                    <p className="text-blue-400 font-semibold">{workout.name}</p>
+                                    <p className="text-gray-400 text-xs mt-1">{workout.type} • {workout.duration}</p>
+                                </div>
+                                <ChevronDown 
+                                    size={24} 
+                                    className={`text-gray-400 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+                                />
+                            </button>
+                            
+                            {isExpanded && (
+                                <div className="px-4 pb-4">
+                                    {workout.injuryNote && (
+                                        <p className="text-yellow-400 text-xs bg-yellow-900/20 p-2 rounded mb-3">
+                                            {workout.injuryNote}
+                                        </p>
+                                    )}
+                                    
+                                    <p className="text-gray-300 text-sm mb-3">{workout.description}</p>
+                                    
+                                    <div className="mb-3">
+                                        <p className="text-blue-300 text-xs font-semibold mb-1">WARM-UP:</p>
+                                        <p className="text-gray-300 text-xs">{workout.warmup}</p>
+                                    </div>
+                                    
+                                    <div className="mb-3">
+                                        <p className="text-green-300 text-xs font-semibold mb-1">WORKOUT:</p>
+                                        <p className="text-gray-300 text-xs">{workout.structure}</p>
+                                    </div>
+                                    
+                                    <div className="mb-3">
+                                        <p className="text-orange-300 text-xs font-semibold mb-1">COOL-DOWN:</p>
+                                        <p className="text-gray-300 text-xs">{workout.cooldown}</p>
+                                    </div>
+                                    
+                                    <div className="bg-purple-900/30 rounded p-2">
+                                        <p className="text-purple-300 text-xs font-semibold mb-1">🏄 SURF ADD-ON (Optional):</p>
+                                        <p className="text-gray-300 text-xs">{workout.surfAddon}</p>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    );
+                }
+            };
+
             const Dashboard = () => {
                 const todayWorkout = getTodayWorkout();
                 const completedToday = hasCompletedToday();
@@ -337,26 +651,24 @@
                             <h2 className="text-xl font-bold text-white mb-4">Today's Workout</h2>
                             {todayWorkout ? (
                                 <div className="space-y-3">
-                                    <div className="flex items-start justify-between">
-                                        <div className="flex-1">
-                                            <p className="text-2xl font-bold text-white">{todayWorkout.name}</p>
-                                            <p className="text-gray-400 text-sm mt-1">{todayWorkout.type} • {todayWorkout.duration}</p>
-                                            <p className="text-blue-400 text-sm mt-1">Focus: {todayWorkout.focus}</p>
-                                            {todayWorkout.note && (
-                                                <p className="text-yellow-400 text-xs mt-2">⚠️ {todayWorkout.note}</p>
-                                            )}
-                                        </div>
-                                        {completedToday && (
-                                            <CheckCircle size={32} className="text-green-500 flex-shrink-0" />
-                                        )}
-                                    </div>
+                                    <WorkoutCard 
+                                        workout={todayWorkout}
+                                        isExpanded={expandedWorkout === todayWorkout.day}
+                                        onToggle={() => setExpandedWorkout(expandedWorkout === todayWorkout.day ? null : todayWorkout.day)}
+                                    />
                                     {!completedToday && (
                                         <button
                                             onClick={() => setCurrentView('logger')}
-                                            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition"
+                                            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition mt-3"
                                         >
                                             Start Workout
                                         </button>
+                                    )}
+                                    {completedToday && (
+                                        <div className="flex items-center justify-center gap-2 text-green-500 font-semibold">
+                                            <CheckCircle size={24} />
+                                            <span>Completed!</span>
+                                        </div>
                                     )}
                                 </div>
                             ) : (
@@ -372,20 +684,17 @@
                             )}
                         </div>
 
-                        {weeklyPlan && weeklyPlan.workouts && (
+                        {weeklyPlan && weeklyPlan.workouts && weeklyPlan.workouts.length > 0 && (
                             <div className="bg-gray-800 rounded-2xl p-6 shadow-xl">
                                 <h2 className="text-xl font-bold text-white mb-4">This Week's Plan</h2>
                                 <div className="space-y-3">
                                     {weeklyPlan.workouts.map((workout, idx) => (
-                                        <div key={idx} className="flex items-center justify-between bg-gray-700 rounded-xl p-3">
-                                            <div className="flex-1">
-                                                <p className="text-white font-semibold">{workout.day}</p>
-                                                <p className="text-gray-400 text-sm">{workout.name}</p>
-                                            </div>
-                                            <span className="text-blue-400 text-xs bg-blue-900/30 px-2 py-1 rounded">
-                                                {workout.type}
-                                            </span>
-                                        </div>
+                                        <WorkoutCard
+                                            key={idx}
+                                            workout={workout}
+                                            isExpanded={expandedWorkout === workout.day}
+                                            onToggle={() => setExpandedWorkout(expandedWorkout === workout.day ? null : workout.day)}
+                                        />
                                     ))}
                                 </div>
                                 <button
@@ -571,27 +880,12 @@
                             <>
                                 <div className="space-y-4 mb-6">
                                     {generatedPlan.map((workout, idx) => (
-                                        <div key={idx} className="bg-gray-800 rounded-xl p-4">
-                                            <div className="flex items-start justify-between mb-2">
-                                                <div className="flex-1">
-                                                    <p className="text-white font-bold text-lg">{workout.day}</p>
-                                                    <p className="text-blue-400 font-semibold">{workout.name}</p>
-                                                </div>
-                                                <span className="bg-blue-900/50 text-blue-300 text-xs px-2 py-1 rounded">
-                                                    {workout.type}
-                                                </span>
-                                            </div>
-                                            <p className="text-gray-400 text-sm mb-1">Focus: {workout.focus}</p>
-                                            <p className="text-gray-500 text-xs">{workout.duration} • {workout.intensity}</p>
-                                            {workout.exercises && workout.exercises.length > 0 && (
-                                                <p className="text-gray-400 text-xs mt-2">
-                                                    {workout.exercises.join(' • ')}
-                                                </p>
-                                            )}
-                                            {workout.note && (
-                                                <p className="text-yellow-400 text-xs mt-2">⚠️ {workout.note}</p>
-                                            )}
-                                        </div>
+                                        <WorkoutCard
+                                            key={idx}
+                                            workout={workout}
+                                            isExpanded={expandedWorkout === workout.day}
+                                            onToggle={() => setExpandedWorkout(expandedWorkout === workout.day ? null : workout.day)}
+                                        />
                                     ))}
                                 </div>
 
