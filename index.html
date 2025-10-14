@@ -526,9 +526,9 @@
                 return workouts.some(w => new Date(w.date).toDateString() === today);
             };
 
-            const getYouTubeEmbedUrl = (exerciseName) => {
+            const getYouTubeSearchUrl = (exerciseName) => {
                 const searchQuery = encodeURIComponent(exerciseName + " proper form tutorial");
-                return `https://www.youtube.com/embed?listType=search&list=${searchQuery}`;
+                return `https://www.youtube.com/results?search_query=${searchQuery}`;
             };
 
             const ExerciseVideoModal = ({ exercise, onClose }) => {
@@ -536,8 +536,8 @@
                 
                 return (
                     <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4" onClick={onClose}>
-                        <div className="bg-gray-900 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-                            <div className="sticky top-0 bg-gray-900 border-b border-gray-700 p-4 flex items-center justify-between">
+                        <div className="bg-gray-900 rounded-2xl max-w-md w-full" onClick={(e) => e.stopPropagation()}>
+                            <div className="border-b border-gray-700 p-4 flex items-center justify-between">
                                 <h3 className="text-white font-bold text-lg">{exercise.name}</h3>
                                 <button
                                     onClick={onClose}
@@ -547,28 +547,30 @@
                                 </button>
                             </div>
                             
-                            <div className="p-4">
-                                <div className="aspect-video bg-black rounded-lg overflow-hidden mb-4">
-                                    <iframe
-                                        width="100%"
-                                        height="100%"
-                                        src={getYouTubeEmbedUrl(exercise.name)}
-                                        title={exercise.name}
-                                        frameBorder="0"
-                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                        allowFullScreen
-                                    />
-                                </div>
-                                
-                                <div className="bg-gray-800 rounded-lg p-4 mb-3">
+                            <div className="p-6 space-y-4">
+                                <div className="bg-gray-800 rounded-lg p-4">
                                     <p className="text-blue-400 text-sm font-semibold mb-1">TARGET REPS:</p>
-                                    <p className="text-white">{exercise.reps}</p>
+                                    <p className="text-white text-lg">{exercise.reps}</p>
                                 </div>
                                 
                                 <div className="bg-gray-800 rounded-lg p-4">
-                                    <p className="text-green-400 text-sm font-semibold mb-1">FORM NOTES:</p>
+                                    <p className="text-green-400 text-sm font-semibold mb-2">FORM NOTES:</p>
                                     <p className="text-gray-300 text-sm">{exercise.notes}</p>
                                 </div>
+
+                                <a
+                                    href={getYouTubeSearchUrl(exercise.name)}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-4 rounded-xl transition flex items-center justify-center gap-2"
+                                >
+                                    <PlayCircle size={24} />
+                                    Watch Tutorial on YouTube
+                                </a>
+
+                                <p className="text-gray-500 text-xs text-center">
+                                    Opens YouTube in a new tab with tutorial videos
+                                </p>
                             </div>
                         </div>
                     </div>
