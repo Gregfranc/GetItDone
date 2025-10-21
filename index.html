@@ -2,12 +2,33 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="GetItDone">
     <title>GetItDone - Workout Tracker</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        @supports (padding: max(0px)) {
+            body {
+                padding-left: max(0px, env(safe-area-inset-left));
+                padding-right: max(0px, env(safe-area-inset-right));
+            }
+        }
+    </style>
 </head>
 <body>
     <div id="root"></div>
@@ -15,6 +36,7 @@
     <script type="text/babel">
         const { useState, useEffect } = React;
 
+        // Icons
         const Dumbbell = ({ size = 24, className = "" }) => (
             <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
                 <path d="m6.5 6.5 11 11"/>
@@ -24,6 +46,15 @@
                 <path d="m2 6 4-4"/>
                 <path d="m3 10 7-7"/>
                 <path d="m14 21 7-7"/>
+            </svg>
+        );
+
+        const Calendar = ({ size = 24, className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                <line x1="16" y1="2" x2="16" y2="6"/>
+                <line x1="8" y1="2" x2="8" y2="6"/>
+                <line x1="3" y1="10" x2="21" y2="10"/>
             </svg>
         );
 
@@ -67,6 +98,7 @@
             </svg>
         );
 
+        // Database setup
         const initDB = () => {
             return new Promise((resolve, reject) => {
                 const request = indexedDB.open('GetItDoneDB', 1);
@@ -84,12 +116,100 @@
             });
         };
 
+        // Workout Templates
+        const GYM_WORKOUTS = {
+            circuit: {
+                name: "Full Body Circuit",
+                duration: "45 minutes",
+                warmup: "5 min: Dynamic warm-up, arm circles, leg swings",
+                exercises: [
+                    { name: "Push-ups", reps: "12-15", sets: "3", notes: "Keep core tight" },
+                    { name: "Squats", reps: "15-20", sets: "3", notes: "Full depth" },
+                    { name: "Plank", reps: "30-45 sec", sets: "3", notes: "Straight line" },
+                    { name: "Lunges", reps: "10 each leg", sets: "3", notes: "Alternating" },
+                    { name: "Mountain Climbers", reps: "20", sets: "3", notes: "Fast pace" },
+                    { name: "Burpees", reps: "8-10", sets: "3", notes: "Full range" }
+                ],
+                rest: "60 seconds between exercises, 2 min between rounds"
+            },
+            upper: {
+                name: "Upper Body Focus",
+                duration: "45 minutes",
+                warmup: "5 min: Arm circles, band pull-aparts, shoulder rolls",
+                exercises: [
+                    { name: "Bench Press", reps: "8-12", sets: "4", notes: "Controlled tempo" },
+                    { name: "Pull-ups/Lat Pulldown", reps: "8-12", sets: "4", notes: "Full range" },
+                    { name: "Overhead Press", reps: "8-10", sets: "3", notes: "Stable core" },
+                    { name: "Rows", reps: "10-12", sets: "3", notes: "Squeeze shoulder blades" },
+                    { name: "Bicep Curls", reps: "12-15", sets: "3", notes: "Slow and controlled" },
+                    { name: "Tricep Dips", reps: "10-15", sets: "3", notes: "Full extension" }
+                ],
+                rest: "90 seconds between sets"
+            },
+            lower: {
+                name: "Lower Body Focus",
+                duration: "45 minutes",
+                warmup: "5 min: Leg swings, hip circles, bodyweight squats",
+                exercises: [
+                    { name: "Squats", reps: "12-15", sets: "4", notes: "Full depth" },
+                    { name: "Deadlifts", reps: "8-10", sets: "4", notes: "Keep back straight" },
+                    { name: "Lunges", reps: "10 each leg", sets: "3", notes: "Alternating" },
+                    { name: "Bulgarian Split Squats", reps: "8 each leg", sets: "3", notes: "Controlled" },
+                    { name: "Calf Raises", reps: "15-20", sets: "3", notes: "Full range" },
+                    { name: "Glute Bridges", reps: "12-15", sets: "3", notes: "Squeeze at top" }
+                ],
+                rest: "90 seconds between sets"
+            }
+        };
+
+        const CARDIO_WORKOUTS = {
+            run: {
+                name: "Running Workout",
+                duration: "45 minutes",
+                warmup: "5 min easy jog",
+                structure: "20 min steady pace + 15 min intervals (2 min hard, 1 min easy) + 5 min cool down",
+                cooldown: "5 min walk + stretching"
+            },
+            bike: {
+                name: "Cycling Workout", 
+                duration: "45 minutes",
+                warmup: "5 min easy spin",
+                structure: "25 min steady ride + 10 min hill intervals + 5 min cool down",
+                cooldown: "5 min easy spin + stretching"
+            },
+            swim: {
+                name: "Swimming Workout",
+                duration: "45 minutes", 
+                warmup: "5 min easy swim",
+                structure: "20 min continuous swim + 15 min intervals (50m fast, 50m easy) + 5 min cool down",
+                cooldown: "5 min easy swim + stretching"
+            }
+        };
+
+        const HOME_WORKOUTS = {
+            circuit: {
+                name: "Home Bodyweight Circuit",
+                duration: "45 minutes",
+                warmup: "5 min: Jumping jacks, arm circles, hip openers",
+                exercises: [
+                    { name: "Jump Squats", reps: "15", sets: "3", notes: "Explosive up" },
+                    { name: "Push-ups", reps: "12-15", sets: "3", notes: "Full range" },
+                    { name: "Plank", reps: "45 sec", sets: "3", notes: "Hold steady" },
+                    { name: "Lunges", reps: "12 each", sets: "3", notes: "Alternating" },
+                    { name: "Burpees", reps: "10", sets: "3", notes: "Full movement" },
+                    { name: "Mountain Climbers", reps: "30 sec", sets: "3", notes: "Fast pace" }
+                ],
+                rest: "60 seconds between exercises"
+            }
+        };
+
         const GetItDone = () => {
             const [currentView, setCurrentView] = useState('dashboard');
             const [profile, setProfile] = useState(null);
             const [workouts, setWorkouts] = useState([]);
             const [currentStreak, setCurrentStreak] = useState(0);
             const [db, setDb] = useState(null);
+            const [workoutSelection, setWorkoutSelection] = useState(null);
 
             useEffect(() => {
                 initDB().then(database => {
@@ -162,6 +282,7 @@
                 tx.oncomplete = () => {
                     loadWorkouts(db);
                     setCurrentView('dashboard');
+                    setWorkoutSelection(null);
                 };
             };
 
@@ -201,10 +322,10 @@
                             <div className="text-center py-8">
                                 <p className="text-gray-400 mb-4">Ready to work out?</p>
                                 <button
-                                    onClick={() => setCurrentView('logger')}
+                                    onClick={() => setCurrentView('selector')}
                                     className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-xl transition"
                                 >
-                                    Log Workout
+                                    Choose Workout
                                 </button>
                             </div>
                         )}
@@ -308,71 +429,68 @@
                 );
             };
 
-            const WorkoutLogger = () => {
-                const [workoutType, setWorkoutType] = useState('Gym');
-                const [exerciseLog, setExerciseLog] = useState([]);
-                const [currentExercise, setCurrentExercise] = useState('');
-                const [currentSets, setCurrentSets] = useState([]);
-                const [duration, setDuration] = useState('');
-                const [distance, setDistance] = useState('');
-                const [pace, setPace] = useState('');
-                const [feeling, setFeeling] = useState(0);
-                const [notes, setNotes] = useState('');
+            const WorkoutSelector = () => {
+                const [step, setStep] = useState(1);
+                const [selectedType, setSelectedType] = useState('');
+                const [selectedFocus, setSelectedFocus] = useState('');
+                const [injuries, setInjuries] = useState('');
 
-                const addSet = () => {
-                    setCurrentSets([...currentSets, { weight: '', reps: '' }]);
-                };
-
-                const updateSet = (index, field, value) => {
-                    const newSets = [...currentSets];
-                    newSets[index][field] = value;
-                    setCurrentSets(newSets);
-                };
-
-                const removeSet = (index) => {
-                    const newSets = currentSets.filter((_, i) => i !== index);
-                    setCurrentSets(newSets);
-                };
-
-                const addExercise = () => {
-                    if (currentExercise.trim() && currentSets.length > 0) {
-                        setExerciseLog([...exerciseLog, {
-                            name: currentExercise,
-                            sets: currentSets
-                        }]);
-                        setCurrentExercise('');
-                        setCurrentSets([]);
-                    }
-                };
-
-                const removeExercise = (index) => {
-                    setExerciseLog(exerciseLog.filter((_, i) => i !== index));
-                };
-
-                const handleSave = () => {
-                    const workoutData = {
-                        type: workoutType,
-                        feeling,
-                        notes
-                    };
-
-                    if (workoutType === 'Gym' || workoutType === 'Home') {
-                        workoutData.exercises = exerciseLog;
+                const handleTypeSelect = (type) => {
+                    setSelectedType(type);
+                    if (type === 'Gym') {
+                        setStep(2);
                     } else {
-                        workoutData.duration = duration;
-                        workoutData.distance = distance;
-                        workoutData.pace = pace;
+                        setStep(3);
                     }
-
-                    saveWorkout(workoutData);
                 };
 
-                const isCardio = workoutType === 'Cardio' || workoutType === 'Bike' || workoutType === 'Swim';
+                const handleFocusSelect = (focus) => {
+                    setSelectedFocus(focus);
+                    setStep(3);
+                };
+
+                const handleInjuriesSubmit = () => {
+                    setStep(4);
+                };
+
+                const generateWorkout = () => {
+                    let workout = null;
+                    
+                    if (selectedType === 'Gym') {
+                        workout = GYM_WORKOUTS[selectedFocus];
+                    } else if (selectedType === 'Run') {
+                        workout = CARDIO_WORKOUTS.run;
+                    } else if (selectedType === 'Swim') {
+                        workout = CARDIO_WORKOUTS.swim;
+                    } else if (selectedType === 'Bike') {
+                        workout = CARDIO_WORKOUTS.bike;
+                    } else if (selectedType === 'Home') {
+                        workout = HOME_WORKOUTS.circuit;
+                    }
+
+                    if (workout) {
+                        const workoutData = {
+                            type: selectedType,
+                            name: workout.name,
+                            duration: workout.duration,
+                            warmup: workout.warmup,
+                            exercises: workout.exercises || null,
+                            structure: workout.structure || null,
+                            cooldown: workout.cooldown || null,
+                            rest: workout.rest || null,
+                            injuries: injuries || null,
+                            feeling: 0,
+                            notes: ''
+                        };
+
+                        saveWorkout(workoutData);
+                    }
+                };
 
                 return (
                     <div className="p-6 pb-32">
                         <div className="flex items-center justify-between mb-6">
-                            <h2 className="text-2xl font-bold text-white">Log Workout</h2>
+                            <h2 className="text-2xl font-bold text-white">Choose Workout</h2>
                             <button
                                 onClick={() => setCurrentView('dashboard')}
                                 className="text-gray-400 hover:text-white"
@@ -381,195 +499,88 @@
                             </button>
                         </div>
 
-                        <div className="mb-6">
-                            <label className="block text-sm font-medium text-gray-300 mb-2">Workout Type</label>
-                            <select
-                                value={workoutType}
-                                onChange={(e) => {
-                                    setWorkoutType(e.target.value);
-                                    setExerciseLog([]);
-                                    setCurrentSets([]);
-                                }}
-                                className="w-full bg-gray-800 text-white rounded-xl p-3 border border-gray-700 focus:border-blue-500 focus:outline-none"
-                            >
-                                <option value="Gym">Gym</option>
-                                <option value="Cardio">Cardio</option>
-                                <option value="Bike">Bike</option>
-                                <option value="Swim">Swim</option>
-                                <option value="Home">Home</option>
-                            </select>
-                        </div>
-
-                        {!isCardio && (
-                            <div className="space-y-6">
-                                {exerciseLog.length > 0 && (
-                                    <div className="space-y-3">
-                                        <h3 className="text-white font-semibold">Completed Exercises</h3>
-                                        {exerciseLog.map((exercise, idx) => (
-                                            <div key={idx} className="bg-gray-800 rounded-xl p-4">
-                                                <div className="flex items-start justify-between mb-2">
-                                                    <p className="text-white font-bold">{exercise.name}</p>
-                                                    <button
-                                                        onClick={() => removeExercise(idx)}
-                                                        className="text-red-500 hover:text-red-400"
-                                                    >
-                                                        ×
-                                                    </button>
-                                                </div>
-                                                {exercise.sets.map((set, setIdx) => (
-                                                    <p key={setIdx} className="text-gray-400 text-sm">
-                                                        Set {setIdx + 1}: {set.weight}lbs × {set.reps} reps
-                                                    </p>
-                                                ))}
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-
-                                <div className="bg-gray-800 rounded-xl p-4 space-y-4">
-                                    <h3 className="text-white font-semibold">Add Exercise</h3>
-                                    
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-300 mb-2">Exercise Name</label>
-                                        <input
-                                            type="text"
-                                            value={currentExercise}
-                                            onChange={(e) => setCurrentExercise(e.target.value)}
-                                            className="w-full bg-gray-700 text-white rounded-xl p-3 border border-gray-600 focus:border-blue-500 focus:outline-none"
-                                            placeholder="Bench Press"
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-300 mb-2">Sets</label>
-                                        {currentSets.map((set, idx) => (
-                                            <div key={idx} className="flex gap-2 mb-2">
-                                                <div className="flex-1">
-                                                    <input
-                                                        type="number"
-                                                        value={set.weight}
-                                                        onChange={(e) => updateSet(idx, 'weight', e.target.value)}
-                                                        className="w-full bg-gray-700 text-white rounded-lg p-2 border border-gray-600 focus:border-blue-500 focus:outline-none"
-                                                        placeholder="Weight (lbs)"
-                                                    />
-                                                </div>
-                                                <div className="flex-1">
-                                                    <input
-                                                        type="number"
-                                                        value={set.reps}
-                                                        onChange={(e) => updateSet(idx, 'reps', e.target.value)}
-                                                        className="w-full bg-gray-700 text-white rounded-lg p-2 border border-gray-600 focus:border-blue-500 focus:outline-none"
-                                                        placeholder="Reps"
-                                                    />
-                                                </div>
-                                                <button
-                                                    onClick={() => removeSet(idx)}
-                                                    className="text-red-500 hover:text-red-400 px-2"
-                                                >
-                                                    ×
-                                                </button>
-                                            </div>
-                                        ))}
-                                        <button
-                                            onClick={addSet}
-                                            className="w-full bg-gray-700 hover:bg-gray-600 text-white font-semibold py-2 rounded-lg transition"
-                                        >
-                                            + Add Set
-                                        </button>
-                                    </div>
-
+                        {step === 1 && (
+                            <div className="space-y-4">
+                                <h3 className="text-lg font-semibold text-white mb-4">What type of workout?</h3>
+                                {['Gym', 'Run', 'Swim', 'Bike', 'Home'].map((type) => (
                                     <button
-                                        onClick={addExercise}
-                                        disabled={!currentExercise.trim() || currentSets.length === 0}
-                                        className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-700 disabled:cursor-not-allowed text-white font-bold py-3 rounded-xl transition"
+                                        key={type}
+                                        onClick={() => handleTypeSelect(type)}
+                                        className="w-full p-4 bg-gray-800 hover:bg-gray-700 text-white rounded-xl text-left font-semibold transition"
                                     >
-                                        Save Exercise
-                                    </button>
-                                </div>
-                            </div>
-                        )}
-
-                        {isCardio && (
-                            <div className="bg-gray-800 rounded-xl p-4 space-y-4">
-                                <h3 className="text-white font-semibold">Workout Details</h3>
-                                
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-300 mb-2">Duration (minutes)</label>
-                                    <input
-                                        type="number"
-                                        value={duration}
-                                        onChange={(e) => setDuration(e.target.value)}
-                                        className="w-full bg-gray-700 text-white rounded-xl p-3 border border-gray-600 focus:border-blue-500 focus:outline-none"
-                                        placeholder="45"
-                                    />
-                                </div>
-
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-300 mb-2">Distance (miles) - Optional</label>
-                                    <input
-                                        type="number"
-                                        step="0.1"
-                                        value={distance}
-                                        onChange={(e) => setDistance(e.target.value)}
-                                        className="w-full bg-gray-700 text-white rounded-xl p-3 border border-gray-600 focus:border-blue-500 focus:outline-none"
-                                        placeholder="5.2"
-                                    />
-                                </div>
-
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-300 mb-2">Avg Pace (min/mile) - Optional</label>
-                                    <input
-                                        type="text"
-                                        value={pace}
-                                        onChange={(e) => setPace(e.target.value)}
-                                        className="w-full bg-gray-700 text-white rounded-xl p-3 border border-gray-600 focus:border-blue-500 focus:outline-none"
-                                        placeholder="8:30"
-                                    />
-                                </div>
-                            </div>
-                        )}
-
-                        <div className="mt-6 bg-gray-800 rounded-xl p-4">
-                            <label className="block text-sm font-medium text-gray-300 mb-3">How Did It Feel?</label>
-                            <div className="flex justify-center gap-2">
-                                {[1, 2, 3, 4, 5].map((star) => (
-                                    <button
-                                        key={star}
-                                        onClick={() => setFeeling(star)}
-                                        className="transition"
-                                    >
-                                        <Star
-                                            size={36}
-                                            className={feeling >= star ? 'text-yellow-400' : 'text-gray-600'}
-                                            filled={feeling >= star}
-                                        />
+                                        {type}
                                     </button>
                                 ))}
                             </div>
-                            <div className="flex justify-between text-xs text-gray-500 mt-2">
-                                <span>Terrible</span>
-                                <span>Amazing</span>
+                        )}
+
+                        {step === 2 && selectedType === 'Gym' && (
+                            <div className="space-y-4">
+                                <h3 className="text-lg font-semibold text-white mb-4">What's your focus?</h3>
+                                {['circuit', 'upper', 'lower'].map((focus) => (
+                                    <button
+                                        key={focus}
+                                        onClick={() => handleFocusSelect(focus)}
+                                        className="w-full p-4 bg-gray-800 hover:bg-gray-700 text-white rounded-xl text-left font-semibold transition"
+                                    >
+                                        {focus === 'circuit' ? 'Full Body Circuit' : 
+                                         focus === 'upper' ? 'Upper Body Focus' : 'Lower Body Focus'}
+                                    </button>
+                                ))}
                             </div>
-                        </div>
+                        )}
 
-                        <div className="mt-6">
-                            <label className="block text-sm font-medium text-gray-300 mb-2">Notes (Optional)</label>
-                            <textarea
-                                value={notes}
-                                onChange={(e) => setNotes(e.target.value)}
-                                className="w-full bg-gray-800 text-white rounded-xl p-3 border border-gray-700 focus:border-blue-500 focus:outline-none"
-                                rows="3"
-                                placeholder="How did the workout go? Any PRs or modifications?"
-                            />
-                        </div>
+                        {step === 3 && (
+                            <div className="space-y-4">
+                                <h3 className="text-lg font-semibold text-white mb-4">Any injuries to be careful of?</h3>
+                                <textarea
+                                    value={injuries}
+                                    onChange={(e) => setInjuries(e.target.value)}
+                                    className="w-full bg-gray-800 text-white rounded-xl p-3 border border-gray-700 focus:border-blue-500 focus:outline-none"
+                                    rows="3"
+                                    placeholder="None, or describe any injuries..."
+                                />
+                                <button
+                                    onClick={handleInjuriesSubmit}
+                                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition"
+                                >
+                                    Continue
+                                </button>
+                            </div>
+                        )}
 
-                        <button
-                            onClick={handleSave}
-                            disabled={isCardio ? !duration : exerciseLog.length === 0}
-                            className="w-full mt-6 bg-green-600 hover:bg-green-700 disabled:bg-gray-700 disabled:cursor-not-allowed text-white font-bold py-4 rounded-xl transition"
-                        >
-                            Complete Workout
-                        </button>
+                        {step === 4 && (
+                            <div className="space-y-4">
+                                <h3 className="text-lg font-semibold text-white mb-4">Your 45-minute workout is ready!</h3>
+                                <div className="bg-gray-800 rounded-xl p-4">
+                                    <h4 className="text-white font-bold text-lg mb-2">
+                                        {selectedType === 'Gym' ? GYM_WORKOUTS[selectedFocus].name : 
+                                         selectedType === 'Run' ? CARDIO_WORKOUTS.run.name :
+                                         selectedType === 'Swim' ? CARDIO_WORKOUTS.swim.name :
+                                         selectedType === 'Bike' ? CARDIO_WORKOUTS.bike.name :
+                                         HOME_WORKOUTS.circuit.name}
+                                    </h4>
+                                    <p className="text-gray-300 text-sm mb-3">
+                                        {selectedType === 'Gym' ? GYM_WORKOUTS[selectedFocus].duration : 
+                                         selectedType === 'Run' ? CARDIO_WORKOUTS.run.duration :
+                                         selectedType === 'Swim' ? CARDIO_WORKOUTS.swim.duration :
+                                         selectedType === 'Bike' ? CARDIO_WORKOUTS.bike.duration :
+                                         HOME_WORKOUTS.circuit.duration}
+                                    </p>
+                                    {injuries && (
+                                        <p className="text-yellow-400 text-sm mb-3">
+                                            ⚠️ Modified for: {injuries}
+                                        </p>
+                                    )}
+                                </div>
+                                <button
+                                    onClick={generateWorkout}
+                                    className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-xl transition"
+                                >
+                                    Start This Workout
+                                </button>
+                            </div>
+                        )}
                     </div>
                 );
             };
@@ -577,7 +588,6 @@
             const BottomNav = () => {
                 const navItems = [
                     { id: 'dashboard', icon: Dumbbell, label: 'Home' },
-                    { id: 'logger', icon: Plus, label: 'Log' },
                     { id: 'profile', icon: User, label: 'Profile' }
                 ];
 
@@ -612,7 +622,7 @@
                 <div className="min-h-screen bg-gray-900 pb-20">
                     {currentView === 'dashboard' && <Dashboard />}
                     {currentView === 'profile' && <ProfileSetup />}
-                    {currentView === 'logger' && <WorkoutLogger />}
+                    {currentView === 'selector' && <WorkoutSelector />}
                     <BottomNav />
                 </div>
             );
