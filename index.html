@@ -2,33 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="GetItDone">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GetItDone - Workout Tracker</title>
-    
     <script src="https://cdn.tailwindcss.com"></script>
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-        
-        @supports (padding: max(0px)) {
-            body {
-                padding-left: max(0px, env(safe-area-inset-left));
-                padding-right: max(0px, env(safe-area-inset-right));
-            }
-        }
-    </style>
 </head>
 <body>
     <div id="root"></div>
@@ -37,7 +16,7 @@
         const { useState, useEffect } = React;
 
         const Dumbbell = ({ size = 24, className = "" }) => (
-            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
                 <path d="m6.5 6.5 11 11"/>
                 <path d="m21 21-1-1"/>
                 <path d="m3 3 1 1"/>
@@ -48,366 +27,61 @@
             </svg>
         );
 
-        const Calendar = ({ size = 24, className = "" }) => (
-            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-                <line x1="16" y1="2" x2="16" y2="6"/>
-                <line x1="8" y1="2" x2="8" y2="6"/>
-                <line x1="3" y1="10" x2="21" y2="10"/>
-            </svg>
-        );
-
         const Plus = ({ size = 24, className = "" }) => (
-            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
                 <line x1="12" y1="5" x2="12" y2="19"/>
                 <line x1="5" y1="12" x2="19" y2="12"/>
             </svg>
         );
 
         const User = ({ size = 24, className = "" }) => (
-            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
                 <circle cx="12" cy="7" r="4"/>
             </svg>
         );
 
         const Flame = ({ size = 24, className = "" }) => (
-            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
                 <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>
             </svg>
         );
 
         const CheckCircle = ({ size = 24, className = "" }) => (
-            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
                 <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
                 <polyline points="22 4 12 14.01 9 11.01"/>
             </svg>
         );
 
-        const Sparkles = ({ size = 24, className = "" }) => (
-            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-                <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
-                <path d="M5 3v4"/>
-                <path d="M19 17v4"/>
-                <path d="M3 5h4"/>
-                <path d="M17 19h4"/>
-            </svg>
-        );
-
-        const ChevronDown = ({ size = 24, className = "" }) => (
-            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-                <polyline points="6 9 12 15 18 9"/>
-            </svg>
-        );
-
-        const PlayCircle = ({ size = 24, className = "" }) => (
-            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-                <circle cx="12" cy="12" r="10"/>
-                <polygon points="10 8 16 12 10 16 10 8"/>
+        const Star = ({ size = 24, className = "", filled = false }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill={filled ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" className={className}>
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
             </svg>
         );
 
         const X = ({ size = 24, className = "" }) => (
-            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
                 <line x1="18" y1="6" x2="6" y2="18"/>
                 <line x1="6" y1="6" x2="18" y2="18"/>
             </svg>
         );
 
-        const Star = ({ size = 24, className = "", filled = false }) => (
-            <svg width={size} height={size} viewBox="0 0 24 24" fill={filled ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-            </svg>
-        );
-
-        const Trash = ({ size = 24, className = "" }) => (
-            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-                <polyline points="3 6 5 6 21 6"/>
-                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-            </svg>
-        );
-
-        const DB_NAME = 'GetItDoneDB';
-        const DB_VERSION = 1;
-
         const initDB = () => {
             return new Promise((resolve, reject) => {
-                const request = indexedDB.open(DB_NAME, DB_VERSION);
-                
+                const request = indexedDB.open('GetItDoneDB', 1);
                 request.onerror = () => reject(request.error);
                 request.onsuccess = () => resolve(request.result);
-                
                 request.onupgradeneeded = (e) => {
                     const db = e.target.result;
-                    
                     if (!db.objectStoreNames.contains('workouts')) {
                         db.createObjectStore('workouts', { keyPath: 'id', autoIncrement: true });
                     }
                     if (!db.objectStoreNames.contains('profile')) {
                         db.createObjectStore('profile', { keyPath: 'id' });
                     }
-                    if (!db.objectStoreNames.contains('weeklyPlans')) {
-                        db.createObjectStore('weeklyPlans', { keyPath: 'id', autoIncrement: true });
-                    }
                 };
             });
-        };
-const GYM_CIRCUITS = [
-            {
-                name: "Upper Body Power & Paddle Strength",
-                warmup: "5 min: Arm circles, band pull-aparts, thoracic rotations, shoulder dislocations",
-                exercises: [
-                    { name: "Dumbbell Bench Press", reps: "10-12", notes: "Explosive up, controlled down" },
-                    { name: "Cable Rows", reps: "12", notes: "Simulate paddle motion, squeeze shoulder blades" },
-                    { name: "Arnold Press", reps: "10", notes: "Full rotation for shoulder mobility" }
-                ],
-                rounds: "4-5",
-                rest: "90 seconds",
-                surfAddon: "Pop-up Burpees x10 (explosive chest-to-ground, jump to feet)"
-            },
-            {
-                name: "Explosive Upper + Rotational Core",
-                warmup: "5 min: Dynamic stretches, band rotations, cat-cow stretches",
-                exercises: [
-                    { name: "Explosive Push-ups", reps: "12", notes: "Clap or hands off ground" },
-                    { name: "Landmine Rotations", reps: "10 each side", notes: "Full hip rotation for surf turns" },
-                    { name: "Pull-ups or Lat Pulldowns", reps: "8-10", notes: "Wide grip for paddle strength" }
-                ],
-                rounds: "4-5",
-                rest: "90 seconds",
-                surfAddon: "TRX/Band Face Pulls x15 (paddle endurance)"
-            },
-            {
-                name: "Lower Body Power & Pop-up Explosion",
-                warmup: "5 min: Leg swings, hip circles, ankle mobility, band walks",
-                exercises: [
-                    { name: "Barbell or Goblet Squats", reps: "10-12", notes: "Explosive up for pop-up power" },
-                    { name: "Single-Leg RDL", reps: "10 each leg", notes: "Balance and hamstring strength" },
-                    { name: "Jump Lunges", reps: "8 each leg", notes: "Explosive switching for agility" }
-                ],
-                rounds: "4-5",
-                rest: "90 seconds",
-                surfAddon: "Box Jumps x10 (explosive pop-up simulation)"
-            },
-            {
-                name: "Full Body Functional & Core Stability",
-                warmup: "5 min: Inchworms, world's greatest stretch, plank to down dog",
-                exercises: [
-                    { name: "Deadlifts", reps: "8-10", notes: "Build posterior chain for stability" },
-                    { name: "Dumbbell Thrusters", reps: "12", notes: "Full body power" },
-                    { name: "Pallof Press", reps: "12 each side", notes: "Anti-rotation core for wave stability" }
-                ],
-                rounds: "4-5",
-                rest: "90 seconds",
-                surfAddon: "Bosu Ball or Balance Board holds x60 sec (surf balance)"
-            },
-            {
-                name: "Shoulder Health & Paddle Endurance",
-                warmup: "5 min: Band internal/external rotations, shoulder CARs, scapular slides",
-                exercises: [
-                    { name: "Face Pulls", reps: "15", notes: "Rear delt and rotator cuff health" },
-                    { name: "Dumbbell Rows", reps: "12 each arm", notes: "Paddle power unilateral" },
-                    { name: "Overhead Carries", reps: "30 sec each arm", notes: "Shoulder stability overhead" }
-                ],
-                rounds: "4",
-                rest: "75 seconds",
-                surfAddon: "Band Paddle Simulation x20 each arm (endurance)"
-            },
-            {
-                name: "Core Power & Rotational Strength",
-                warmup: "5 min: Bird dogs, dead bugs, spinal rotations",
-                exercises: [
-                    { name: "Ab Wheel Rollouts", reps: "10-12", notes: "Full extension for core strength" },
-                    { name: "Russian Twists", reps: "20 total", notes: "Weighted for rotational power" },
-                    { name: "Hanging Leg Raises", reps: "10-12", notes: "Straight legs for max engagement" }
-                ],
-                rounds: "4-5",
-                rest: "60 seconds",
-                surfAddon: "Medicine Ball Slams x15 (explosive core)"
-            }
-        ];
-
-        const CARDIO_WORKOUTS = [
-            {
-                name: "Steady Endurance Run",
-                description: "Build aerobic base and mental toughness",
-                duration: "35-45 min",
-                structure: "Conversational pace, nose breathing if possible",
-                warmup: "5 min walk + dynamic leg swings",
-                cooldown: "5 min walk + static stretches",
-                surfAddon: "Finish with 10 pop-up burpees for surf conditioning"
-            },
-            {
-                name: "Interval Power Run",
-                description: "Explosive speed and paddle burst power",
-                duration: "30 min total",
-                structure: "5 min warm-up jog, then 8 rounds: 2 min hard / 1 min easy, 5 min cool down",
-                warmup: "Dynamic warm-up + high knees",
-                cooldown: "Walk + hip flexor stretches",
-                surfAddon: "Sprint starts x5 (simulate catching wave)"
-            },
-            {
-                name: "Hill Sprints for Leg Power",
-                description: "Build explosive lower body for pop-ups",
-                duration: "25 min total",
-                structure: "Find a hill, sprint up 20-30 sec, walk down recovery, repeat 8-10 times",
-                warmup: "10 min easy jog + leg swings",
-                cooldown: "Stretching focus on calves and quads",
-                surfAddon: "Downhill bounds x5 (controlled explosive)"
-            }
-        ];
-
-        const BIKE_WORKOUTS = [
-            {
-                name: "Mountain Bike Endurance",
-                description: "Leg endurance and mental toughness",
-                duration: "60-90 min",
-                structure: "Moderate pace with natural terrain variation",
-                warmup: "10 min easy spin",
-                cooldown: "10 min easy spin + quad stretches",
-                surfAddon: "Finish with 20 jump squats (leg power)"
-            },
-            {
-                name: "Bike Interval Power",
-                description: "Explosive leg power for pop-ups",
-                duration: "40 min total",
-                structure: "10 min warm-up, then 6 rounds: 3 min hard / 2 min easy, 10 min cool down",
-                warmup: "Easy spin + leg swings",
-                cooldown: "Easy spin + stretching",
-                surfAddon: "Box jumps x10 (explosive power transfer)"
-            }
-        ];
-
-        const SWIM_WORKOUTS = [
-            {
-                name: "Endurance Swim",
-                description: "Shoulder endurance and breathing",
-                duration: "35-45 min",
-                structure: "Continuous swimming, mix freestyle and backstroke for shoulder balance",
-                warmup: "5 min easy swim + arm circles",
-                cooldown: "5 min easy + shoulder stretches",
-                surfAddon: "Sprint swim 25m x4 (paddle burst simulation)"
-            },
-            {
-                name: "Surf Training Swim",
-                description: "Paddle power and breath control",
-                duration: "30 min",
-                structure: "10 rounds: 50m sprint / 30 sec rest (simulate paddling out)",
-                warmup: "200m easy mixed strokes",
-                cooldown: "Easy 200m + static stretches",
-                surfAddon: "Underwater swimming x3 lengths (breath work)"
-            }
-        ];
-
-        const HOME_CIRCUITS = [
-            {
-                name: "Bodyweight Power Circuit",
-                warmup: "5 min: Jumping jacks, arm circles, hip openers",
-                exercises: [
-                    { name: "Jump Squats", reps: "12", notes: "Explosive for pop-up power" },
-                    { name: "Decline Push-ups", reps: "12", notes: "Feet elevated for paddle strength" },
-                    { name: "Reverse Lunges", reps: "10 each leg", notes: "Balance and leg strength" }
-                ],
-                rounds: "4-5",
-                rest: "75 seconds",
-                surfAddon: "Pop-up practice x20 (dry land surf conditioning)"
-            },
-            {
-                name: "Band & Core Strength",
-                warmup: "5 min: Dynamic stretches with bands",
-                exercises: [
-                    { name: "Band Pull-aparts", reps: "15", notes: "Shoulder health and posture" },
-                    { name: "Ab Wheel Rollouts", reps: "10-12", notes: "Core strength and control" },
-                    { name: "Band Rows", reps: "15", notes: "Paddle simulation" }
-                ],
-                rounds: "4-5",
-                rest: "60 seconds",
-                surfAddon: "Band rotational chops x12 each side (surf turns)"
-            },
-            {
-                name: "Jump Rope HIIT & Agility",
-                warmup: "3 min: Light jump rope + ankle bounces",
-                exercises: [
-                    { name: "Jump Rope", reps: "60 seconds", notes: "Fast pace cardio" },
-                    { name: "Burpees", reps: "10", notes: "Full body explosive" },
-                    { name: "Mountain Climbers", reps: "30 seconds", notes: "Core and cardio" }
-                ],
-                rounds: "4-5",
-                rest: "90 seconds",
-                surfAddon: "Lateral bounds x20 total (agility)"
-            }
-        ];
-
-        const generateWorkoutPlan = (availableDays, profile) => {
-            const selectedDays = availableDays.filter(d => d.selected);
-            
-            if (selectedDays.length === 0) return [];
-
-            const plan = [];
-            const workoutTypes = ['gym', 'cardio', 'bike', 'swim', 'home'];
-            let gymCount = 0;
-            let typeIndex = 0;
-
-            selectedDays.slice(0, 5).forEach((day, index) => {
-                let type = workoutTypes[typeIndex % workoutTypes.length];
-                let workout = {};
-
-                if (type === 'gym') {
-                    const circuit1 = GYM_CIRCUITS[gymCount % GYM_CIRCUITS.length];
-                    const circuit2 = GYM_CIRCUITS[(gymCount + 1) % GYM_CIRCUITS.length];
-                    
-                    workout = {
-                        day: day.day,
-                        type: 'Gym',
-                        options: [circuit1, circuit2],
-                        hasOptions: true
-                    };
-                    gymCount += 2;
-                } else if (type === 'cardio') {
-                    const cardioWorkout = CARDIO_WORKOUTS[Math.floor(Math.random() * CARDIO_WORKOUTS.length)];
-                    workout = {
-                        day: day.day,
-                        type: 'Cardio',
-                        ...cardioWorkout,
-                        hasOptions: false
-                    };
-                } else if (type === 'bike') {
-                    const bikeWorkout = BIKE_WORKOUTS[Math.floor(Math.random() * BIKE_WORKOUTS.length)];
-                    workout = {
-                        day: day.day,
-                        type: 'Bike',
-                        ...bikeWorkout,
-                        hasOptions: false
-                    };
-                } else if (type === 'swim') {
-                    const swimWorkout = SWIM_WORKOUTS[Math.floor(Math.random() * SWIM_WORKOUTS.length)];
-                    workout = {
-                        day: day.day,
-                        type: 'Swim',
-                        ...swimWorkout,
-                        hasOptions: false
-                    };
-                } else if (type === 'home') {
-                    const homeCircuit1 = HOME_CIRCUITS[Math.floor(Math.random() * HOME_CIRCUITS.length)];
-                    const homeCircuit2 = HOME_CIRCUITS[(HOME_CIRCUITS.indexOf(homeCircuit1) + 1) % HOME_CIRCUITS.length];
-                    
-                    workout = {
-                        day: day.day,
-                        type: 'Home',
-                        options: [homeCircuit1, homeCircuit2],
-                        hasOptions: true
-                    };
-                }
-
-                if (profile?.injuries && profile.injuries.toLowerCase() !== 'none' && profile.injuries.trim() !== '') {
-                    workout.injuryNote = `⚠️ Modified for: ${profile.injuries}`;
-                }
-
-                plan.push(workout);
-                typeIndex++;
-            });
-
-            return plan;
         };
 
         const GetItDone = () => {
@@ -415,19 +89,13 @@ const GYM_CIRCUITS = [
             const [profile, setProfile] = useState(null);
             const [workouts, setWorkouts] = useState([]);
             const [currentStreak, setCurrentStreak] = useState(0);
-            const [weeklyPlan, setWeeklyPlan] = useState(null);
             const [db, setDb] = useState(null);
-            const [expandedWorkout, setExpandedWorkout] = useState(null);
-            const [videoModal, setVideoModal] = useState(null);
-            const [logMode, setLogMode] = useState(null);
-            const [scheduledWorkoutToLog, setScheduledWorkoutToLog] = useState(null);
 
             useEffect(() => {
                 initDB().then(database => {
                     setDb(database);
                     loadProfile(database);
                     loadWorkouts(database);
-                    loadWeeklyPlan(database);
                 });
             }, []);
 
@@ -435,11 +103,8 @@ const GYM_CIRCUITS = [
                 const tx = database.transaction('profile', 'readonly');
                 const store = tx.objectStore('profile');
                 const request = store.get('main');
-                
                 request.onsuccess = () => {
-                    if (request.result) {
-                        setProfile(request.result);
-                    }
+                    if (request.result) setProfile(request.result);
                 };
             };
 
@@ -447,64 +112,10 @@ const GYM_CIRCUITS = [
                 const tx = database.transaction('workouts', 'readonly');
                 const store = tx.objectStore('workouts');
                 const request = store.getAll();
-                
                 request.onsuccess = () => {
                     const allWorkouts = request.result;
                     setWorkouts(allWorkouts);
                     calculateStreak(allWorkouts);
-                };
-            };
-
-            const loadWeeklyPlan = async (database) => {
-                const tx = database.transaction('weeklyPlans', 'readonly');
-                const store = tx.objectStore('weeklyPlans');
-                const request = store.getAll();
-                
-                request.onsuccess = () => {
-                    const plans = request.result;
-                    if (plans.length > 0) {
-                        const latestPlan = plans[plans.length - 1];
-                        setWeeklyPlan(latestPlan);
-                    }
-                };
-            };
-
-            const saveWeeklyPlan = async (plan) => {
-                if (!db) return;
-                
-                const planData = {
-                    workouts: plan,
-                    createdAt: new Date().toISOString(),
-                    weekOf: new Date().toLocaleDateString()
-                };
-                
-                const tx = db.transaction('weeklyPlans', 'readwrite');
-                const store = tx.objectStore('weeklyPlans');
-                store.add(planData);
-                
-                tx.oncomplete = () => {
-                    setWeeklyPlan(planData);
-                    setCurrentView('dashboard');
-                };
-            };
-
-            const saveWorkout = async (workoutData) => {
-                if (!db) return;
-                
-                const workout = {
-                    ...workoutData,
-                    date: new Date().toISOString()
-                };
-                
-                const tx = db.transaction('workouts', 'readwrite');
-                const store = tx.objectStore('workouts');
-                store.add(workout);
-                
-                tx.oncomplete = () => {
-                    loadWorkouts(db);
-                    setCurrentView('dashboard');
-                    setLogMode(null);
-                    setScheduledWorkoutToLog(null);
                 };
             };
 
@@ -513,7 +124,6 @@ const GYM_CIRCUITS = [
                     setCurrentStreak(0);
                     return;
                 }
-
                 const sortedWorkouts = allWorkouts.sort((a, b) => new Date(b.date) - new Date(a.date));
                 let streak = 0;
                 let currentDate = new Date();
@@ -522,37 +132,37 @@ const GYM_CIRCUITS = [
                 for (let workout of sortedWorkouts) {
                     const workoutDate = new Date(workout.date);
                     workoutDate.setHours(0, 0, 0, 0);
-                    
                     const diffDays = Math.floor((currentDate - workoutDate) / (1000 * 60 * 60 * 24));
-                    
                     if (diffDays === streak) {
                         streak++;
                     } else if (diffDays > streak) {
                         break;
                     }
                 }
-                
                 setCurrentStreak(streak);
             };
 
             const saveProfile = async (profileData) => {
                 if (!db) return;
-                
                 const tx = db.transaction('profile', 'readwrite');
                 const store = tx.objectStore('profile');
                 store.put({ id: 'main', ...profileData });
-                
                 tx.oncomplete = () => {
                     setProfile({ id: 'main', ...profileData });
                     setCurrentView('dashboard');
                 };
             };
 
-            const getTodayWorkout = () => {
-                if (!weeklyPlan) return null;
-                
-                const today = new Date().toLocaleDateString('en-US', { weekday: 'long' });
-                return weeklyPlan.workouts?.find(w => w.day === today);
+            const saveWorkout = async (workoutData) => {
+                if (!db) return;
+                const workout = { ...workoutData, date: new Date().toISOString() };
+                const tx = db.transaction('workouts', 'readwrite');
+                const store = tx.objectStore('workouts');
+                store.add(workout);
+                tx.oncomplete = () => {
+                    loadWorkouts(db);
+                    setCurrentView('dashboard');
+                };
             };
 
             const hasCompletedToday = () => {
@@ -560,298 +170,78 @@ const GYM_CIRCUITS = [
                 return workouts.some(w => new Date(w.date).toDateString() === today);
             };
 
-            const getYouTubeSearchUrl = (exerciseName) => {
-                const searchQuery = encodeURIComponent(exerciseName + " proper form tutorial");
-                return `https://www.youtube.com/results?search_query=${searchQuery}`;
-            };
+            const Dashboard = () => (
+                <div className="p-6 space-y-6">
+                    <div className="text-center">
+                        <h1 className="text-4xl font-bold text-white mb-2">GetItDone</h1>
+                        <p className="text-gray-400">
+                            {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
+                        </p>
+                    </div>
 
-            const ExerciseVideoModal = ({ exercise, onClose }) => {
-                if (!exercise) return null;
-                
-                return (
-                    <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4" onClick={onClose}>
-                        <div className="bg-gray-900 rounded-2xl max-w-md w-full" onClick={(e) => e.stopPropagation()}>
-                            <div className="border-b border-gray-700 p-4 flex items-center justify-between">
-                                <h3 className="text-white font-bold text-lg">{exercise.name}</h3>
-                                <button
-                                    onClick={onClose}
-                                    className="text-gray-400 hover:text-white"
-                                >
-                                    <X size={24} />
-                                </button>
+                    <div className="bg-gradient-to-br from-orange-500 to-red-600 rounded-2xl p-6 shadow-xl">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-white/80 text-sm font-medium">Current Streak</p>
+                                <p className="text-5xl font-bold text-white mt-1">{currentStreak}</p>
+                                <p className="text-white/80 text-sm mt-1">days</p>
                             </div>
-                            
-                            <div className="p-6 space-y-4">
-                                <div className="bg-gray-800 rounded-lg p-4">
-                                    <p className="text-blue-400 text-sm font-semibold mb-1">TARGET REPS:</p>
-                                    <p className="text-white text-lg">{exercise.reps}</p>
-                                </div>
-                                
-                                <div className="bg-gray-800 rounded-lg p-4">
-                                    <p className="text-green-400 text-sm font-semibold mb-2">FORM NOTES:</p>
-                                    <p className="text-gray-300 text-sm">{exercise.notes}</p>
-                                </div>
-
-                                
-                                    href={getYouTubeSearchUrl(exercise.name)}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-4 rounded-xl transition flex items-center justify-center gap-2"
-                                >
-                                    <PlayCircle size={24} />
-                                    Watch Tutorial on YouTube
-                                </a>
-
-                                <p className="text-gray-500 text-xs text-center">
-                                    Opens YouTube in a new tab with tutorial videos
-                                </p>
-                            </div>
+                            <Flame size={64} className="text-white/30" />
                         </div>
                     </div>
-                );
-            };
-const WorkoutCard = ({ workout, isExpanded, onToggle }) => {
-                if (workout.hasOptions) {
-                    return (
-                        <div className="bg-gray-800 rounded-xl overflow-hidden">
-                            <button
-                                onClick={onToggle}
-                                className="w-full p-4 text-left flex items-center justify-between"
-                            >
-                                <div className="flex-1">
-                                    <p className="text-white font-bold text-lg">{workout.day}</p>
-                                    <p className="text-blue-400 font-semibold">{workout.type} Day - 2 Circuit Options</p>
-                                    <p className="text-gray-400 text-xs mt-1">Tap to view circuits</p>
-                                </div>
-                                <ChevronDown 
-                                    size={24} 
-                                    className={`text-gray-400 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
-                                />
-                            </button>
-                            
-                            {isExpanded && (
-                                <div className="px-4 pb-4 space-y-4">
-                                    {workout.injuryNote && (
-                                        <p className="text-yellow-400 text-xs bg-yellow-900/20 p-2 rounded">
-                                            {workout.injuryNote}
-                                        </p>
-                                    )}
-                                    
-                                    {workout.options.map((option, idx) => (
-                                        <div key={idx} className="bg-gray-700 rounded-lg p-4">
-                                            <p className="text-white font-bold mb-2">Option {idx + 1}: {option.name}</p>
-                                            
-                                            <div className="mb-3">
-                                                <p className="text-blue-300 text-xs font-semibold mb-1">WARM-UP:</p>
-                                                <p className="text-gray-300 text-xs">{option.warmup}</p>
-                                            </div>
-                                            
-                                            <div className="mb-3">
-                                                <p className="text-green-300 text-xs font-semibold mb-2">CIRCUIT ({option.rounds} rounds):</p>
-                                                {option.exercises.map((ex, i) => (
-                                                    <div key={i} className="mb-2 pl-3 border-l-2 border-green-500">
-                                                        <button
-                                                            onClick={() => setVideoModal(ex)}
-                                                            className="text-left w-full hover:bg-gray-600/30 rounded p-2 transition"
-                                                        >
-                                                            <div className="flex items-center gap-2">
-                                                                <PlayCircle size={16} className="text-red-500 flex-shrink-0" />
-                                                                <div className="flex-1">
-                                                                    <p className="text-white text-sm font-semibold">{i + 1}. {ex.name}</p>
-                                                                    <p className="text-gray-400 text-xs">{ex.reps} reps</p>
-                                                                    <p className="text-gray-500 text-xs italic">{ex.notes}</p>
-                                                                </div>
-                                                            </div>
-                                                        </button>
-                                                    </div>
-                                                ))}
-                                                <p className="text-orange-300 text-xs mt-2">💪 Rest: {option.rest} between rounds</p>
-                                            </div>
-                                            
-                                            <div className="bg-purple-900/30 rounded p-2 mt-2">
-                                                <p className="text-purple-300 text-xs font-semibold mb-1">🏄 SURF ADD-ON (Optional):</p>
-                                                <p className="text-gray-300 text-xs">{option.surfAddon}</p>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-                    );
-                } else {
-                    return (
-                        <div className="bg-gray-800 rounded-xl overflow-hidden">
-                            <button
-                                onClick={onToggle}
-                                className="w-full p-4 text-left flex items-center justify-between"
-                            >
-                                <div className="flex-1">
-                                    <p className="text-white font-bold text-lg">{workout.day}</p>
-                                    <p className="text-blue-400 font-semibold">{workout.name}</p>
-                                    <p className="text-gray-400 text-xs mt-1">{workout.type} • {workout.duration}</p>
-                                </div>
-                                <ChevronDown 
-                                    size={24} 
-                                    className={`text-gray-400 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
-                                />
-                            </button>
-                            
-                            {isExpanded && (
-                                <div className="px-4 pb-4">
-                                    {workout.injuryNote && (
-                                        <p className="text-yellow-400 text-xs bg-yellow-900/20 p-2 rounded mb-3">
-                                            {workout.injuryNote}
-                                        </p>
-                                    )}
-                                    
-                                    <p className="text-gray-300 text-sm mb-3">{workout.description}</p>
-                                    
-                                    <div className="mb-3">
-                                        <p className="text-blue-300 text-xs font-semibold mb-1">WARM-UP:</p>
-                                        <p className="text-gray-300 text-xs">{workout.warmup}</p>
-                                    </div>
-                                    
-                                    <div className="mb-3">
-                                        <p className="text-green-300 text-xs font-semibold mb-1">WORKOUT:</p>
-                                        <p className="text-gray-300 text-xs">{workout.structure}</p>
-                                    </div>
-                                    
-                                    <div className="mb-3">
-                                        <p className="text-orange-300 text-xs font-semibold mb-1">COOL-DOWN:</p>
-                                        <p className="text-gray-300 text-xs">{workout.cooldown}</p>
-                                    </div>
-                                    
-                                    <div className="bg-purple-900/30 rounded p-2">
-                                        <p className="text-purple-300 text-xs font-semibold mb-1">🏄 SURF ADD-ON (Optional):</p>
-                                        <p className="text-gray-300 text-xs">{workout.surfAddon}</p>
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                    );
-                }
-            };
 
-            const Dashboard = () => {
-                const todayWorkout = getTodayWorkout();
-                const completedToday = hasCompletedToday();
-                
-                return (
-                    <div className="p-6 space-y-6">
-                        <div className="text-center">
-                            <h1 className="text-4xl font-bold text-white mb-2">GetItDone</h1>
-                            <p className="text-gray-400">
-                                {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
+                    <div className="bg-gray-800 rounded-2xl p-6 shadow-xl">
+                        <h2 className="text-xl font-bold text-white mb-4">Today's Status</h2>
+                        {hasCompletedToday() ? (
+                            <div className="flex items-center justify-center gap-2 text-green-500 font-semibold py-8">
+                                <CheckCircle size={24} />
+                                <span>Workout Completed!</span>
+                            </div>
+                        ) : (
+                            <div className="text-center py-8">
+                                <p className="text-gray-400 mb-4">Ready to work out?</p>
+                                <button
+                                    onClick={() => setCurrentView('logger')}
+                                    className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-xl transition"
+                                >
+                                    Log Workout
+                                </button>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="bg-gray-800 rounded-xl p-4">
+                            <p className="text-gray-400 text-sm">This Week</p>
+                            <p className="text-3xl font-bold text-white mt-1">
+                                {workouts.filter(w => {
+                                    const weekAgo = new Date();
+                                    weekAgo.setDate(weekAgo.getDate() - 7);
+                                    return new Date(w.date) > weekAgo;
+                                }).length}
                             </p>
+                            <p className="text-gray-400 text-xs mt-1">workouts</p>
                         </div>
-
-                        <div className="bg-gradient-to-br from-orange-500 to-red-600 rounded-2xl p-6 shadow-xl">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="text-white/80 text-sm font-medium">Current Streak</p>
-                                    <p className="text-5xl font-bold text-white mt-1">{currentStreak}</p>
-                                    <p className="text-white/80 text-sm mt-1">days</p>
-                                </div>
-                                <Flame size={64} className="text-white/30" />
-                            </div>
+                        <div className="bg-gray-800 rounded-xl p-4">
+                            <p className="text-gray-400 text-sm">Total</p>
+                            <p className="text-3xl font-bold text-white mt-1">{workouts.length}</p>
+                            <p className="text-gray-400 text-xs mt-1">workouts</p>
                         </div>
-
-                        <div className="bg-gray-800 rounded-2xl p-6 shadow-xl">
-                            <h2 className="text-xl font-bold text-white mb-4">Today's Workout</h2>
-                            {todayWorkout ? (
-                                <div className="space-y-3">
-                                    <WorkoutCard 
-                                        workout={todayWorkout}
-                                        isExpanded={expandedWorkout === todayWorkout.day}
-                                        onToggle={() => setExpandedWorkout(expandedWorkout === todayWorkout.day ? null : todayWorkout.day)}
-                                    />
-                                    {!completedToday && (
-                                        <button
-                                            onClick={() => {
-                                                setScheduledWorkoutToLog(todayWorkout);
-                                                setLogMode('scheduled');
-                                                setCurrentView('logger');
-                                            }}
-                                            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition mt-3"
-                                        >
-                                            Start Workout
-                                        </button>
-                                    )}
-                                    {completedToday && (
-                                        <div className="flex items-center justify-center gap-2 text-green-500 font-semibold">
-                                            <CheckCircle size={24} />
-                                            <span>Completed!</span>
-                                        </div>
-                                    )}
-                                </div>
-                            ) : (
-                                <div className="text-center py-8">
-                                    <p className="text-gray-400 mb-4">No workout scheduled for today</p>
-                                    <button
-                                        onClick={() => setCurrentView('planner')}
-                                        className="mt-4 text-blue-400 hover:text-blue-300 font-medium"
-                                    >
-                                        Plan Your Week →
-                                    </button>
-                                </div>
-                            )}
-                        </div>
-
-                        {weeklyPlan && weeklyPlan.workouts && weeklyPlan.workouts.length > 0 && (
-                            <div className="bg-gray-800 rounded-2xl p-6 shadow-xl">
-                                <h2 className="text-xl font-bold text-white mb-4">This Week's Plan</h2>
-                                <div className="space-y-3">
-                                    {weeklyPlan.workouts.map((workout, idx) => (
-                                        <WorkoutCard
-                                            key={idx}
-                                            workout={workout}
-                                            isExpanded={expandedWorkout === workout.day}
-                                            onToggle={() => setExpandedWorkout(expandedWorkout === workout.day ? null : workout.day)}
-                                        />
-                                    ))}
-                                </div>
-                                <button
-                                    onClick={() => setCurrentView('planner')}
-                                    className="w-full mt-4 text-blue-400 hover:text-blue-300 text-sm font-medium"
-                                >
-                                    Generate New Plan
-                                </button>
-                            </div>
-                        )}
-
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="bg-gray-800 rounded-xl p-4">
-                                <p className="text-gray-400 text-sm">This Week</p>
-                                <p className="text-3xl font-bold text-white mt-1">
-                                    {workouts.filter(w => {
-                                        const weekAgo = new Date();
-                                        weekAgo.setDate(weekAgo.getDate() - 7);
-                                        return new Date(w.date) > weekAgo;
-                                    }).length}
-                                </p>
-                                <p className="text-gray-400 text-xs mt-1">workouts</p>
-                            </div>
-                            <div className="bg-gray-800 rounded-xl p-4">
-                                <p className="text-gray-400 text-sm">Total</p>
-                                <p className="text-3xl font-bold text-white mt-1">{workouts.length}</p>
-                                <p className="text-gray-400 text-xs mt-1">workouts</p>
-                            </div>
-                        </div>
-
-                        {!profile && (
-                            <div className="bg-blue-900/30 border border-blue-500/50 rounded-xl p-4">
-                                <p className="text-blue-200 font-medium mb-2">Welcome! Set up your profile first</p>
-                                <button
-                                    onClick={() => setCurrentView('profile')}
-                                    className="text-blue-400 hover:text-blue-300 font-medium text-sm"
-                                >
-                                    Complete Setup →
-                                </button>
-                            </div>
-                        )}
                     </div>
-                );
-            };
+
+                    {!profile && (
+                        <div className="bg-blue-900/30 border border-blue-500/50 rounded-xl p-4">
+                            <p className="text-blue-200 font-medium mb-2">Welcome! Set up your profile first</p>
+                            <button
+                                onClick={() => setCurrentView('profile')}
+                                className="text-blue-400 hover:text-blue-300 font-medium text-sm"
+                            >
+                                Complete Setup →
+                            </button>
+                        </div>
+                    )}
+                </div>
+            );
 
             const ProfileSetup = () => {
                 const [formData, setFormData] = useState({
@@ -866,9 +256,7 @@ const WorkoutCard = ({ workout, isExpanded, onToggle }) => {
                         <h2 className="text-2xl font-bold text-white mb-6">Your Profile</h2>
                         <div className="space-y-4">
                             <div>
-                                <label className="block text-sm font-medium text-gray-300 mb-2">
-                                    Primary Goals
-                                </label>
+                                <label className="block text-sm font-medium text-gray-300 mb-2">Primary Goals</label>
                                 <textarea
                                     value={formData.goals}
                                     onChange={(e) => setFormData({...formData, goals: e.target.value})}
@@ -877,11 +265,8 @@ const WorkoutCard = ({ workout, isExpanded, onToggle }) => {
                                     placeholder="Build muscle, improve mobility, surfing performance..."
                                 />
                             </div>
-
                             <div>
-                                <label className="block text-sm font-medium text-gray-300 mb-2">
-                                    Current Weight (lbs)
-                                </label>
+                                <label className="block text-sm font-medium text-gray-300 mb-2">Current Weight (lbs)</label>
                                 <input
                                     type="number"
                                     value={formData.weight}
@@ -890,11 +275,8 @@ const WorkoutCard = ({ workout, isExpanded, onToggle }) => {
                                     placeholder="185"
                                 />
                             </div>
-
                             <div>
-                                <label className="block text-sm font-medium text-gray-300 mb-2">
-                                    Current Injuries or Limitations
-                                </label>
+                                <label className="block text-sm font-medium text-gray-300 mb-2">Current Injuries or Limitations</label>
                                 <textarea
                                     value={formData.injuries}
                                     onChange={(e) => setFormData({...formData, injuries: e.target.value})}
@@ -903,11 +285,8 @@ const WorkoutCard = ({ workout, isExpanded, onToggle }) => {
                                     placeholder="None, or describe any injuries..."
                                 />
                             </div>
-
                             <div>
-                                <label className="block text-sm font-medium text-gray-300 mb-2">
-                                    Preferred Workout Time
-                                </label>
+                                <label className="block text-sm font-medium text-gray-300 mb-2">Preferred Workout Time</label>
                                 <select
                                     value={formData.preferredWorkoutTime}
                                     onChange={(e) => setFormData({...formData, preferredWorkoutTime: e.target.value})}
@@ -918,7 +297,6 @@ const WorkoutCard = ({ workout, isExpanded, onToggle }) => {
                                     <option value="evening">Evening</option>
                                 </select>
                             </div>
-
                             <button
                                 onClick={() => saveProfile(formData)}
                                 className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition mt-6"
@@ -930,106 +308,8 @@ const WorkoutCard = ({ workout, isExpanded, onToggle }) => {
                 );
             };
 
-            const WeeklyPlanner = () => {
-                const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-                const [selectedDays, setSelectedDays] = useState(
-                    daysOfWeek.map(day => ({ day, selected: false }))
-                );
-                const [generatedPlan, setGeneratedPlan] = useState(null);
-                const [expandedPlanWorkout, setExpandedPlanWorkout] = useState(null);
-
-                const toggleDay = (index) => {
-                    const newDays = [...selectedDays];
-                    newDays[index].selected = !newDays[index].selected;
-                    setSelectedDays(newDays);
-                };
-
-                const handleGenerate = () => {
-                    const plan = generateWorkoutPlan(selectedDays, profile);
-                    setGeneratedPlan(plan);
-                    setExpandedPlanWorkout(null);
-                };
-
-                const handleSavePlan = () => {
-                    if (generatedPlan) {
-                        saveWeeklyPlan(generatedPlan);
-                        setExpandedPlanWorkout(null);
-                    }
-                };
-
-                return (
-                    <div className="p-6">
-                        <h2 className="text-2xl font-bold text-white mb-2">Weekly Planner</h2>
-                        <p className="text-gray-400 text-sm mb-6">Select 5 days you can train this week</p>
-                        
-                        {!generatedPlan ? (
-                            <>
-                                <div className="space-y-3 mb-6">
-                                    {selectedDays.map((day, idx) => (
-                                        <button
-                                            key={idx}
-                                            onClick={() => toggleDay(idx)}
-                                            className={`w-full p-4 rounded-xl text-left font-semibold transition ${
-                                                day.selected 
-                                                    ? 'bg-blue-600 text-white' 
-                                                    : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
-                                            }`}
-                                        >
-                                            <div className="flex items-center justify-between">
-                                                <span>{day.day}</span>
-                                                {day.selected && <CheckCircle size={20} />}
-                                            </div>
-                                        </button>
-                                    ))}
-                                </div>
-
-                                <button
-                                    onClick={handleGenerate}
-                                    disabled={selectedDays.filter(d => d.selected).length === 0}
-                                    className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold py-4 rounded-xl transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                                >
-                                    <Sparkles size={20} />
-                                    Generate My Workout Plan
-                                </button>
-                            </>
-                        ) : (
-                            <>
-                                <div className="space-y-4 mb-6">
-                                    {generatedPlan.map((workout, idx) => (
-                                        <WorkoutCard
-                                            key={idx}
-                                            workout={workout}
-                                            isExpanded={expandedPlanWorkout === workout.day}
-                                            onToggle={() => setExpandedPlanWorkout(expandedPlanWorkout === workout.day ? null : workout.day)}
-                                        />
-                                    ))}
-                                </div>
-
-                                <div className="flex gap-3">
-                                    <button
-                                        onClick={() => {
-                                            setGeneratedPlan(null);
-                                            setExpandedPlanWorkout(null);
-                                        }}
-                                        className="flex-1 bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 rounded-xl transition"
-                                    >
-                                        Regenerate
-                                    </button>
-                                    <button
-                                        onClick={handleSavePlan}
-                                        className="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl transition"
-                                    >
-                                        Save Plan
-                                    </button>
-                                </div>
-                            </>
-                        )}
-                    </div>
-                );
-            };
-
             const WorkoutLogger = () => {
-                const [workoutType, setWorkoutType] = useState(scheduledWorkoutToLog?.type || 'Gym');
+                const [workoutType, setWorkoutType] = useState('Gym');
                 const [exerciseLog, setExerciseLog] = useState([]);
                 const [currentExercise, setCurrentExercise] = useState('');
                 const [currentSets, setCurrentSets] = useState([]);
@@ -1072,7 +352,6 @@ const WorkoutCard = ({ workout, isExpanded, onToggle }) => {
                 const handleSave = () => {
                     const workoutData = {
                         type: workoutType,
-                        scheduledWorkout: scheduledWorkoutToLog?.name || null,
                         feeling,
                         notes
                     };
@@ -1093,46 +372,33 @@ const WorkoutCard = ({ workout, isExpanded, onToggle }) => {
                 return (
                     <div className="p-6 pb-32">
                         <div className="flex items-center justify-between mb-6">
-                            <div>
-                                <h2 className="text-2xl font-bold text-white">Log Workout</h2>
-                                {scheduledWorkoutToLog && (
-                                    <p className="text-blue-400 text-sm mt-1">{scheduledWorkoutToLog.name}</p>
-                                )}
-                            </div>
+                            <h2 className="text-2xl font-bold text-white">Log Workout</h2>
                             <button
-                                onClick={() => {
-                                    setLogMode(null);
-                                    setScheduledWorkoutToLog(null);
-                                    setCurrentView('dashboard');
-                                }}
+                                onClick={() => setCurrentView('dashboard')}
                                 className="text-gray-400 hover:text-white"
                             >
                                 <X size={24} />
                             </button>
                         </div>
 
-                        {!scheduledWorkoutToLog && (
-                            <div className="mb-6">
-                                <label className="block text-sm font-medium text-gray-300 mb-2">
-                                    Workout Type
-                                </label>
-                                <select
-                                    value={workoutType}
-                                    onChange={(e) => {
-                                        setWorkoutType(e.target.value);
-                                        setExerciseLog([]);
-                                        setCurrentSets([]);
-                                    }}
-                                    className="w-full bg-gray-800 text-white rounded-xl p-3 border border-gray-700 focus:border-blue-500 focus:outline-none"
-                                >
-                                    <option value="Gym">Gym</option>
-                                    <option value="Cardio">Cardio</option>
-                                    <option value="Bike">Bike</option>
-                                    <option value="Swim">Swim</option>
-                                    <option value="Home">Home</option>
-                                </select>
-                            </div>
-                        )}
+                        <div className="mb-6">
+                            <label className="block text-sm font-medium text-gray-300 mb-2">Workout Type</label>
+                            <select
+                                value={workoutType}
+                                onChange={(e) => {
+                                    setWorkoutType(e.target.value);
+                                    setExerciseLog([]);
+                                    setCurrentSets([]);
+                                }}
+                                className="w-full bg-gray-800 text-white rounded-xl p-3 border border-gray-700 focus:border-blue-500 focus:outline-none"
+                            >
+                                <option value="Gym">Gym</option>
+                                <option value="Cardio">Cardio</option>
+                                <option value="Bike">Bike</option>
+                                <option value="Swim">Swim</option>
+                                <option value="Home">Home</option>
+                            </select>
+                        </div>
 
                         {!isCardio && (
                             <div className="space-y-6">
@@ -1147,7 +413,7 @@ const WorkoutCard = ({ workout, isExpanded, onToggle }) => {
                                                         onClick={() => removeExercise(idx)}
                                                         className="text-red-500 hover:text-red-400"
                                                     >
-                                                        <Trash size={18} />
+                                                        ×
                                                     </button>
                                                 </div>
                                                 {exercise.sets.map((set, setIdx) => (
@@ -1164,9 +430,7 @@ const WorkoutCard = ({ workout, isExpanded, onToggle }) => {
                                     <h3 className="text-white font-semibold">Add Exercise</h3>
                                     
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-300 mb-2">
-                                            Exercise Name
-                                        </label>
+                                        <label className="block text-sm font-medium text-gray-300 mb-2">Exercise Name</label>
                                         <input
                                             type="text"
                                             value={currentExercise}
@@ -1177,9 +441,7 @@ const WorkoutCard = ({ workout, isExpanded, onToggle }) => {
                                     </div>
 
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-300 mb-2">
-                                            Sets
-                                        </label>
+                                        <label className="block text-sm font-medium text-gray-300 mb-2">Sets</label>
                                         {currentSets.map((set, idx) => (
                                             <div key={idx} className="flex gap-2 mb-2">
                                                 <div className="flex-1">
@@ -1204,7 +466,7 @@ const WorkoutCard = ({ workout, isExpanded, onToggle }) => {
                                                     onClick={() => removeSet(idx)}
                                                     className="text-red-500 hover:text-red-400 px-2"
                                                 >
-                                                    <Trash size={20} />
+                                                    ×
                                                 </button>
                                             </div>
                                         ))}
@@ -1232,9 +494,7 @@ const WorkoutCard = ({ workout, isExpanded, onToggle }) => {
                                 <h3 className="text-white font-semibold">Workout Details</h3>
                                 
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-300 mb-2">
-                                        Duration (minutes)
-                                    </label>
+                                    <label className="block text-sm font-medium text-gray-300 mb-2">Duration (minutes)</label>
                                     <input
                                         type="number"
                                         value={duration}
@@ -1245,9 +505,7 @@ const WorkoutCard = ({ workout, isExpanded, onToggle }) => {
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-300 mb-2">
-                                        Distance (miles) - Optional
-                                    </label>
+                                    <label className="block text-sm font-medium text-gray-300 mb-2">Distance (miles) - Optional</label>
                                     <input
                                         type="number"
                                         step="0.1"
@@ -1259,9 +517,7 @@ const WorkoutCard = ({ workout, isExpanded, onToggle }) => {
                                 </div>
 
                                 <div>
-<label className="block text-sm font-medium text-gray-300 mb-2">
-                                        Avg Pace (min/mile) - Optional
-                                    </label>
+                                    <label className="block text-sm font-medium text-gray-300 mb-2">Avg Pace (min/mile) - Optional</label>
                                     <input
                                         type="text"
                                         value={pace}
@@ -1274,9 +530,7 @@ const WorkoutCard = ({ workout, isExpanded, onToggle }) => {
                         )}
 
                         <div className="mt-6 bg-gray-800 rounded-xl p-4">
-                            <label className="block text-sm font-medium text-gray-300 mb-3">
-                                How Did It Feel?
-                            </label>
+                            <label className="block text-sm font-medium text-gray-300 mb-3">How Did It Feel?</label>
                             <div className="flex justify-center gap-2">
                                 {[1, 2, 3, 4, 5].map((star) => (
                                     <button
@@ -1299,9 +553,7 @@ const WorkoutCard = ({ workout, isExpanded, onToggle }) => {
                         </div>
 
                         <div className="mt-6">
-                            <label className="block text-sm font-medium text-gray-300 mb-2">
-                                Notes (Optional)
-                            </label>
+                            <label className="block text-sm font-medium text-gray-300 mb-2">Notes (Optional)</label>
                             <textarea
                                 value={notes}
                                 onChange={(e) => setNotes(e.target.value)}
@@ -1318,19 +570,6 @@ const WorkoutCard = ({ workout, isExpanded, onToggle }) => {
                         >
                             Complete Workout
                         </button>
-
-                        <div className="mt-4 bg-blue-900/30 border border-blue-500/50 rounded-xl p-4">
-                            <p className="text-blue-200 text-sm font-medium mb-2">🍎 Apple Health Sync</p>
-                            <p className="text-gray-400 text-xs mb-3">
-                                Auto-sync coming soon! For now, manually log your workouts.
-                            </p>
-                            <button
-                                disabled
-                                className="w-full bg-gray-700 text-gray-500 font-semibold py-2 rounded-lg cursor-not-allowed"
-                            >
-                                Sync from Apple Health (Coming Soon)
-                            </button>
-                        </div>
                     </div>
                 );
             };
@@ -1338,7 +577,6 @@ const WorkoutCard = ({ workout, isExpanded, onToggle }) => {
             const BottomNav = () => {
                 const navItems = [
                     { id: 'dashboard', icon: Dumbbell, label: 'Home' },
-                    { id: 'planner', icon: Calendar, label: 'Plan' },
                     { id: 'logger', icon: Plus, label: 'Log' },
                     { id: 'profile', icon: User, label: 'Profile' }
                 ];
@@ -1352,13 +590,7 @@ const WorkoutCard = ({ workout, isExpanded, onToggle }) => {
                                 return (
                                     <button
                                         key={item.id}
-                                        onClick={() => {
-                                            if (item.id === 'logger') {
-                                                setLogMode('manual');
-                                                setScheduledWorkoutToLog(null);
-                                            }
-                                            setCurrentView(item.id);
-                                        }}
+                                        onClick={() => setCurrentView(item.id)}
                                         className="flex flex-col items-center justify-center flex-1 h-full"
                                     >
                                         <Icon 
@@ -1380,17 +612,8 @@ const WorkoutCard = ({ workout, isExpanded, onToggle }) => {
                 <div className="min-h-screen bg-gray-900 pb-20">
                     {currentView === 'dashboard' && <Dashboard />}
                     {currentView === 'profile' && <ProfileSetup />}
-                    {currentView === 'planner' && <WeeklyPlanner />}
                     {currentView === 'logger' && <WorkoutLogger />}
-                    
                     <BottomNav />
-                    
-                    {videoModal && (
-                        <ExerciseVideoModal
-                            exercise={videoModal}
-                            onClose={() => setVideoModal(null)}
-                        />
-                    )}
                 </div>
             );
         };
